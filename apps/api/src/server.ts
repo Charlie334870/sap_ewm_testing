@@ -1,4 +1,5 @@
 import { createDatabase, runMigrations } from "@ewm/database";
+import { createSecretBox } from "@ewm/sap-tools";
 import { buildApp } from "./app";
 import { bootstrapFirstAdmin } from "./bootstrap";
 import { loadConfig } from "./config";
@@ -12,11 +13,17 @@ const bootstrap = await bootstrapFirstAdmin(database.db, config.bootstrap);
 const app = await buildApp({
   db: database.db,
   config,
+  secrets: config.secretsKey ? createSecretBox(config.secretsKey) : null,
   trustProxy: process.env.TRUST_PROXY === "true",
 });
 
 if (bootstrap === "created")
   app.log.info(`First administrator created: ${config.bootstrap.adminEmail}`);
+if (!config.secretsKey) {
+  app.log.warn(
+    "SECRETS_KEY is not set: only simulated SAP systems can be registered. See docs/SETUP.md.",
+  );
+}
 if (bootstrap === "not_configured") {
   app.log.warn(
     "No users exist. Set BOOTSTRAP_ADMIN_EMAIL and BOOTSTRAP_ADMIN_PASSWORD, then restart.",

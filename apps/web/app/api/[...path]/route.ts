@@ -7,8 +7,10 @@
 export const dynamic = "force-dynamic";
 
 const API_URL = () => process.env.API_INTERNAL_URL ?? "http://localhost:4000";
+// "authorization" carries an agent access token: the MCP server reaches the platform through here.
 const FORWARDED_REQUEST_HEADERS = [
   "cookie",
+  "authorization",
   "content-type",
   "origin",
   "user-agent",

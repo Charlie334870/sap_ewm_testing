@@ -199,6 +199,9 @@ export const sapSystems = pgTable(
     deployment: ewmDeployment("deployment").notNull().default("embedded"),
     adapter: sapAdapter("adapter").notNull().default("simulated"),
     baseUrl: text("base_url"),
+    /** Result of the last connection test: which SAP services answered and what they expose. */
+    lastCheck: jsonb("last_check"),
+    lastCheckedAt: ts("last_checked_at"),
     isActive: boolean("is_active").notNull().default(true),
     createdBy: uuid("created_by")
       .notNull()
@@ -206,6 +209,53 @@ export const sapSystems = pgTable(
     createdAt: createdAt(),
   },
   (t) => [uniqueIndex("sap_systems_project_sid_client_unique").on(t.projectId, t.sid, t.client)],
+);
+
+/**
+ * Secrets needed to reach a system, encrypted with a key that lives outside the database
+ * (SECRETS_KEY). Only the tool server decrypts them. They never go to a model, a log, an API
+ * response or an audit entry.
+ */
+export const sapCredentials = pgTable("sap_credentials", {
+  sapSystemId: uuid("sap_system_id")
+    .primaryKey()
+    .references(() => sapSystems.id, { onDelete: "cascade" }),
+  /** api_key for the SAP API sandbox. More kinds arrive with the customer-system connector. */
+  kind: text("kind").notNull(),
+  /** AES-256-GCM: base64 of iv, auth tag and ciphertext, joined by dots. */
+  secretEncrypted: text("secret_encrypted").notNull(),
+  updatedBy: uuid("updated_by").references(() => users.id),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});
+
+/**
+ * Tokens that let an outside agent (for example Claude through the MCP server) act as one user
+ * inside one project. A token can only read tickets and systems and run read-only tools.
+ */
+export const apiTokens = pgTable(
+  "api_tokens",
+  {
+    id: id(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    /** SHA-256 of the token. The token itself is shown once, when it is created. */
+    tokenHash: text("token_hash").notNull(),
+    /** First characters of the token, so people can tell their tokens apart. */
+    tokenPrefix: text("token_prefix").notNull(),
+    createdAt: createdAt(),
+    expiresAt: ts("expires_at").notNull(),
+    lastUsedAt: ts("last_used_at"),
+    revokedAt: ts("revoked_at"),
+  },
+  (t) => [
+    uniqueIndex("api_tokens_hash_unique").on(t.tokenHash),
+    index("api_tokens_project_idx").on(t.projectId),
+  ],
 );
 
 // ---------------------------------------------------------------- tickets
@@ -317,9 +367,12 @@ export const sapToolCalls = pgTable(
       onDelete: "cascade",
     }),
     stepId: uuid("step_id").references(() => investigationSteps.id, { onDelete: "set null" }),
+    ticketId: uuid("ticket_id").references(() => tickets.id, { onDelete: "set null" }),
     sapSystemId: uuid("sap_system_id")
       .notNull()
       .references(() => sapSystems.id),
+    /** Set when the call came in through an API token (an outside agent), not the web console. */
+    apiTokenId: uuid("api_token_id").references(() => apiTokens.id, { onDelete: "set null" }),
     toolName: text("tool_name").notNull(),
     authLevel: integer("auth_level").notNull(),
     input: jsonb("input").notNull(),
@@ -333,6 +386,7 @@ export const sapToolCalls = pgTable(
   },
   (t) => [
     index("sap_tool_calls_investigation_idx").on(t.investigationId),
+    index("sap_tool_calls_project_idx").on(t.projectId, t.createdAt),
     check("sap_tool_calls_auth_level_range", sql`${t.authLevel} between 0 and 3`),
   ],
 );

@@ -12,6 +12,7 @@
     "@ewm/audit": "workspace:*",
     "@ewm/auth": "workspace:*",
     "@ewm/database": "workspace:*",
+    "@ewm/sap-tools": "workspace:*",
     "@ewm/shared": "workspace:*",
     "@fastify/cookie": "^11.1.2",
     "@fastify/rate-limit": "^11.2.0",

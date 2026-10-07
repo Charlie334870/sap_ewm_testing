@@ -140,7 +140,7 @@ describe("SAP system records", () => {
       adapter: "sap",
     });
     expect(res.statusCode).toBe(400);
-    expect(res.json().error.message).toContain("Only simulated systems");
+    expect(res.json().error.message).toContain("Customer SAP systems cannot be connected yet");
     const listed = (await team.admin.get(`${p}/sap-systems`)).json().sapSystems;
     expect(listed.every((s: { adapter: string }) => s.adapter === "simulated")).toBe(true);
   });

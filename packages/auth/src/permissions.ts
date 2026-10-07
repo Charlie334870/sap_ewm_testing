@@ -4,7 +4,8 @@ import type { ProjectRole } from "@ewm/shared";
  * Who may do what inside a project.
  *
  *   analyst     raises tickets and reads
- *   consultant  also changes ticket status, reads the audit log, and (from Milestone 5) approves
+ *   consultant  also changes ticket status, reads the audit log, runs read-only SAP tools,
+ *               creates agent access tokens, and (from Milestone 5) approves
  *   admin       also manages members and SAP system records
  *
  * An organisation administrator is treated as admin on every project of that organisation.
@@ -17,6 +18,9 @@ export const PROJECT_ACTIONS = {
   "ticket.comment": "analyst",
   "ticket.change_status": "consultant",
   "audit.view": "consultant",
+  "tool.execute": "consultant",
+  "tool_call.view": "consultant",
+  "api_token.manage": "consultant",
   "member.manage": "admin",
   "sap_system.manage": "admin",
 } as const satisfies Record<string, ProjectRole>;

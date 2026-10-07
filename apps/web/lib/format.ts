@@ -57,6 +57,10 @@ const ACTION_LABEL: Record<string, string> = {
   "member.role_changed": "Changed member role",
   "member.removed": "Removed member",
   "sap_system.created": "Registered SAP system",
+  "sap_system.tested": "Tested SAP connection",
+  "sap_system.credential_changed": "Replaced SAP API key",
+  "api_token.created": "Created agent access token",
+  "api_token.revoked": "Revoked agent access token",
   "ticket.created": "Created ticket",
   "ticket.commented": "Commented on ticket",
   "ticket.status_changed": "Changed ticket status",
@@ -78,5 +82,15 @@ export function auditDetail(data: Record<string, unknown>): string {
   if (d.previousRole && d.role) parts.push(`${d.previousRole} to ${d.role}`);
   else if (d.role) parts.push(d.role);
   if (d.reason) parts.push(d.reason.replace("_", " "));
+  if (typeof data.toolsAvailable === "number") {
+    parts.push(data.reachable ? `${data.toolsAvailable} tools available` : "not reachable");
+  }
   return parts.join(", ");
 }
+
+export const TOOL_STATUS_LABEL = {
+  ok: "OK",
+  error: "Failed",
+  timeout: "Timed out",
+  rejected: "Refused",
+} as const;

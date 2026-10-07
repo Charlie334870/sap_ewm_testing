@@ -9,7 +9,7 @@ export interface Section {
   purpose: string;
 }
 
-export const CURRENT_MILESTONE = 1;
+export const CURRENT_MILESTONE = 2;
 
 export const SECTIONS: readonly Section[] = [
   {

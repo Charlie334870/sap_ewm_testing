@@ -3,6 +3,7 @@ import type { FastifyInstance, InjectOptions, LightMyRequestResponse } from "fas
 import { DEFAULT_SCRYPT_PARAMS, hashPassword, SESSION_COOKIE } from "@ewm/auth";
 import { createDatabase, schema, type DatabaseHandle } from "@ewm/database";
 import type { ProjectRole } from "@ewm/shared";
+import { createSecretBox } from "@ewm/sap-tools";
 import { buildApp } from "../src/app";
 import type { Config } from "../src/config";
 import { testDatabaseUrl } from "./env";
@@ -16,7 +17,9 @@ export interface TestContext {
   close: () => Promise<void>;
 }
 
-export async function createTestContext(): Promise<TestContext> {
+export async function createTestContext(
+  options: { sapFetch?: typeof fetch } = {},
+): Promise<TestContext> {
   const database = createDatabase(testDatabaseUrl(), { max: 10 });
   const config: Config = {
     databaseUrl: testDatabaseUrl(),
@@ -32,6 +35,10 @@ export async function createTestContext(): Promise<TestContext> {
     config,
     scryptN: TEST_SCRYPT_N,
     loginRateLimit: 10_000,
+    toolRateLimit: 10_000,
+    secrets: createSecretBox("ab".repeat(32)),
+    sapFetch: options.sapFetch,
+    sandboxHosts: ["sandbox.api.sap.com"],
   });
   return {
     app,

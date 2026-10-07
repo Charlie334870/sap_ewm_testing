@@ -2,18 +2,22 @@ import cookie from "@fastify/cookie";
 import rateLimit from "@fastify/rate-limit";
 import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
 import { sql } from "drizzle-orm";
-import { SESSION_COOKIE } from "@ewm/auth";
+import { API_TOKEN_PREFIX, SESSION_COOKIE } from "@ewm/auth";
 import type { AppDeps } from "./context";
-import { AppError, forbidden } from "./errors";
+import { AppError, forbidden, unauthorized } from "./errors";
 import { auditRoutes } from "./routes/audit";
 import { authRoutes } from "./routes/auth";
 import { projectRoutes } from "./routes/projects";
 import { userRoutes } from "./routes/users";
+import { sapRoutes } from "./routes/sap";
+import { resolveApiToken } from "./services/api-tokens";
 import { resolveSession } from "./services/auth";
 
 export interface BuildOptions extends AppDeps {
   /** Login attempts allowed per minute per address. */
   loginRateLimit?: number;
+  /** Tool calls allowed per minute per user. */
+  toolRateLimit?: number;
   trustProxy?: boolean;
 }
 
@@ -42,6 +46,20 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     const origin = req.headers.origin;
     if (!SAFE_METHODS.has(req.method) && origin && !config.webOrigins.includes(origin)) {
       throw forbidden("This request came from a site that is not allowed.");
+    }
+    // An outside agent presents an access token. It never has a browser session as well.
+    const bearer = /^Bearer (\S+)$/.exec(req.headers.authorization ?? "")?.[1];
+    if (bearer?.startsWith(API_TOKEN_PREFIX)) {
+      const user = await resolveApiToken(db, bearer);
+      if (!user)
+        throw unauthorized("This access token is not valid. It may have expired or been revoked.");
+      if (!req.routeOptions.config?.tokenAllowed) {
+        throw forbidden(
+          "An agent access token can only read tickets and systems and run read-only tools.",
+        );
+      }
+      req.user = user;
+      return;
     }
     const token = req.cookies[SESSION_COOKIE];
     if (token) {
@@ -91,6 +109,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
       authRoutes(api, { ...opts, loginRateLimit: opts.loginRateLimit ?? 10 });
       userRoutes(api, opts);
       projectRoutes(api, opts);
+      sapRoutes(api, { ...opts, toolRateLimit: opts.toolRateLimit ?? 120 });
       auditRoutes(api, opts);
     },
     { prefix: "/api/v1" },

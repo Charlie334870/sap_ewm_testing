@@ -38,3 +38,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm --filter @ewm/web build
+      # The bundled MCP server is committed so that connecting Claude needs only Node.js.
+      # This fails when the source changed and the bundle was not rebuilt.
+      - run: pnpm --filter @ewm/mcp build
+      - run: git diff --exit-code -- apps/mcp/dist

@@ -94,8 +94,13 @@ export default function TicketPage() {
           <section className="section">
             <h2>Investigation</h2>
             <p className="note note--info">
-              The agent&apos;s investigation, root cause, evidence and proposed solution will appear
-              here from Milestone 3. In this build a ticket is handled by people only.
+              The built-in agent&apos;s investigation, root cause, evidence and proposed solution
+              will appear here from Milestone 3. Until then you can read the system yourself under{" "}
+              <Link href={t.sapSystemId ? `/sap-systems/${t.sapSystemId}` : "/sap-systems"}>
+                SAP Systems
+              </Link>
+              , or let Claude investigate with the same read-only tools through{" "}
+              <Link href="/agent-access">agent access</Link>.
             </p>
           </section>
 

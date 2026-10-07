@@ -3,7 +3,7 @@
 This guide gets the EWM Agent console running on your own computer. You do not need to be a
 developer. Allow 30 minutes the first time; most of it is waiting for downloads.
 
-Everything here is free. Nothing in Milestone 1 needs an SAP system or a Claude API key.
+Everything here is free. Nothing in this guide needs a paid SAP system or a Claude API key.
 
 ## 1. Install two programs
 
@@ -55,6 +55,17 @@ Change these three values, then save and close:
 The same database password also appears inside the two lines that start with `DATABASE_URL`.
 Replace it there too.
 
+**One more value, needed only for a real SAP connection.** `SECRETS_KEY` encrypts the SAP API key
+before it is stored. Create a key with this command and paste the 64 characters it prints after
+`SECRETS_KEY=` in `.env`:
+
+```bash
+docker run --rm node:22-slim node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Keep that value. If it is changed later, the stored API key can no longer be read and has to be
+entered again. Without `SECRETS_KEY` everything works except registering SAP's API sandbox.
+
 ## 4. Start everything
 
 ```bash
@@ -86,6 +97,18 @@ warehouse MUHW.` Choose the system. The ticket opens as `MUHW-1`.
 7. Sign out, sign in as the second person. They see "No project yet", and the address of ticket
    `MUHW-1` shows "Project not found" for them.
 
+## 7. Try the SAP tools (Milestone 2)
+
+1. **SAP Systems** → open the simulated system `S4D` → _Create the practice tickets_. Three
+   tickets appear under **Tickets**, each describing a symptom only.
+2. On the same page, under _Run a read-only tool_, choose **Delivery**, direction `outbound`,
+   delivery `80001001`, and run it. The result is marked **Simulated** and has a call ID. It also
+   appears under _Recent tool calls_.
+3. Choose **Warehouse tasks**, enter only warehouse `MUHW`, and run it. The call is **Refused**,
+   no data is shown, and the refusal is in the list too.
+4. To read from real SAP software, follow [SAP-CONNECTION.md](SAP-CONNECTION.md).
+5. To let Claude investigate a ticket with these tools, follow [CONNECT-CLAUDE.md](CONNECT-CLAUDE.md).
+
 ## Stop and start again
 
 - Stop: press `Ctrl + C` in the window from step 4, or run `docker compose down`.
@@ -99,19 +122,21 @@ git pull
 docker compose up --build
 ```
 
-Database changes are applied automatically when the API starts.
+Database changes are applied automatically when the API starts. Your projects and tickets are kept.
+If a new version adds a setting, it is listed in `.env.example`; copy the new line into your `.env`.
 
 ## If something goes wrong
 
-| What you see                                              | What to do                                                                                                                                                    |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Set POSTGRES_PASSWORD in the .env file`                  | Step 3 was skipped, or `.env` is not in the project folder.                                                                                                   |
-| `port is already allocated` for 3000 or 5433              | Another program uses that port. Close it, or change the left-hand number of the port in `compose.yaml` (for example `"127.0.0.1:3001:3000"`).                 |
-| Sign-in says the email or password is not correct         | The administrator is created only on the very first start. If you changed `.env` after that, the old values still apply. Reset with `docker compose down -v`. |
-| `password authentication failed` in the `api` lines       | `POSTGRES_PASSWORD` was changed after the first start. The database keeps its first password. Reset with `docker compose down -v`.                            |
-| The page says the API service is not reachable            | The `api` container is still starting or has stopped. Look at its lines in the terminal for the reason.                                                       |
-| `BOOTSTRAP_ADMIN_PASSWORD must be at least 12 characters` | Use a longer password in `.env`.                                                                                                                              |
-| You forgot your own administrator password                | Another administrator can set a new one under **Users**. If you are the only one, reset with `docker compose down -v` (this deletes all data).                |
+| What you see                                                         | What to do                                                                                                                                                    |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Set POSTGRES_PASSWORD in the .env file`                             | Step 3 was skipped, or `.env` is not in the project folder.                                                                                                   |
+| `port is already allocated` for 3000 or 5433                         | Another program uses that port. Close it, or change the left-hand number of the port in `compose.yaml` (for example `"127.0.0.1:3001:3000"`).                 |
+| Sign-in says the email or password is not correct                    | The administrator is created only on the very first start. If you changed `.env` after that, the old values still apply. Reset with `docker compose down -v`. |
+| `password authentication failed` in the `api` lines                  | `POSTGRES_PASSWORD` was changed after the first start. The database keeps its first password. Reset with `docker compose down -v`.                            |
+| The page says the API service is not reachable                       | The `api` container is still starting or has stopped. Look at its lines in the terminal for the reason.                                                       |
+| `BOOTSTRAP_ADMIN_PASSWORD must be at least 12 characters`            | Use a longer password in `.env`.                                                                                                                              |
+| _The server has no SECRETS_KEY_ when registering the SAP API sandbox | Add `SECRETS_KEY` to `.env` as described in step 3, then stop and start again.                                                                                |
+| You forgot your own administrator password                           | Another administrator can set a new one under **Users**. If you are the only one, reset with `docker compose down -v` (this deletes all data).                |
 
 ## Run the automated tests (optional)
 

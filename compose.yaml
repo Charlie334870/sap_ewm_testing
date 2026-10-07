@@ -38,6 +38,8 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-info}
       # The API is only reachable through the web container, so its forwarded address is trusted.
       TRUST_PROXY: "true"
+      # Encrypts SAP API keys. Without it only simulated systems can be registered.
+      SECRETS_KEY: ${SECRETS_KEY:-}
       BOOTSTRAP_ORG_NAME: ${BOOTSTRAP_ORG_NAME:-My Consulting Company}
       BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-}
       BOOTSTRAP_ADMIN_NAME: ${BOOTSTRAP_ADMIN_NAME:-Administrator}
@@ -68,6 +70,18 @@ services:
     ports:
       # Open http://localhost:3000 in the browser. Reachable from this computer only.
       - "127.0.0.1:3000:3000"
+
+  # MCP server for Claude Desktop, for people who prefer Docker to Node.js. It is not started by
+  # "docker compose up"; Claude Desktop starts it on demand (see docs/CONNECT-CLAUDE.md).
+  mcp:
+    profiles: ["agent"]
+    build:
+      context: .
+      dockerfile: apps/mcp/Dockerfile
+    stdin_open: true
+    environment:
+      EWM_API_URL: http://api:4000
+      EWM_API_TOKEN: ${EWM_API_TOKEN:-}
 
 volumes:
   db-data:

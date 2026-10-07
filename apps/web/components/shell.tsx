@@ -87,6 +87,12 @@ export function Shell({ children }: { children: ReactNode }) {
                   Users
                 </Link>
               ) : null}
+              <Link
+                href="/agent-access"
+                aria-current={pathname === "/agent-access" ? "page" : undefined}
+              >
+                Agent access
+              </Link>
               <Link href="/account" aria-current={pathname === "/account" ? "page" : undefined}>
                 Password
               </Link>

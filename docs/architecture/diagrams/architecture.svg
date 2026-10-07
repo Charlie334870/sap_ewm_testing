@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1010" viewBox="0 0 1500 1010" font-family="Liberation Sans, Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto">
+      <path d="M0,0 L16,8 L0,16 z" fill="#44546A"/>
+    </marker>
+  </defs>
+  <rect width="1500" height="1010" fill="#FFFFFF"/>
+
+  <!-- User -->
+  <rect x="560" y="20" width="380" height="64" rx="10" fill="#1F3864"/>
+  <text x="750" y="60" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF">Consultant / approver (browser)</text>
+  <line x1="750" y1="84" x2="750" y2="118" stroke="#44546A" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Web -->
+  <rect x="480" y="122" width="540" height="64" rx="10" fill="#2E75B6"/>
+  <text x="750" y="162" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF">Web UI  ·  Next.js / React</text>
+  <line x1="750" y1="186" x2="750" y2="222" stroke="#44546A" stroke-width="3" marker-end="url(#arr)"/>
+  <text x="766" y="210" font-size="18" fill="#44546A">REST</text>
+
+  <!-- API + agent -->
+  <rect x="250" y="226" width="1000" height="250" rx="12" fill="#DDEBF7" stroke="#2E75B6" stroke-width="3"/>
+  <text x="750" y="262" text-anchor="middle" font-size="24" font-weight="bold" fill="#1F3864">API and agent runtime  ·  Node.js / TypeScript  ·  one process</text>
+  <g font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    <rect x="280" y="284" width="220" height="66" rx="8" fill="#2E75B6"/><text x="390" y="325">Tickets</text>
+    <rect x="520" y="284" width="220" height="66" rx="8" fill="#2E75B6"/><text x="630" y="325">Investigations</text>
+    <rect x="760" y="284" width="220" height="66" rx="8" fill="#2E75B6"/><text x="870" y="325">Approvals</text>
+    <rect x="1000" y="284" width="220" height="66" rx="8" fill="#2E75B6"/><text x="1110" y="325">Audit log</text>
+    <rect x="280" y="372" width="460" height="80" rx="8" fill="#7030A0"/>
+    <text x="510" y="406">Agent loop</text>
+    <text x="510" y="434" font-size="17" font-weight="normal">plan · call tool · observe · update hypotheses</text>
+    <rect x="760" y="372" width="220" height="80" rx="8" fill="#548235"/>
+    <text x="870" y="406">Knowledge</text>
+    <text x="870" y="434" font-size="17" font-weight="normal">search + citations</text>
+    <rect x="1000" y="372" width="220" height="80" rx="8" fill="#7030A0"/>
+    <text x="1110" y="406">Model provider</text>
+    <text x="1110" y="434" font-size="17" font-weight="normal">fast / deep tiers</text>
+  </g>
+
+  <!-- Postgres -->
+  <rect x="20" y="284" width="190" height="168" rx="10" fill="#548235"/>
+  <g font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    <text x="115" y="340">PostgreSQL</text>
+    <text x="115" y="368">+ pgvector</text>
+    <text x="115" y="404" font-size="16" font-weight="normal">data · documents</text>
+    <text x="115" y="426" font-size="16" font-weight="normal">vectors · audit</text>
+  </g>
+  <line x1="250" y1="368" x2="216" y2="368" stroke="#44546A" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Claude API -->
+  <rect x="1290" y="284" width="190" height="168" rx="10" fill="#C55A11"/>
+  <g font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    <text x="1385" y="350">Claude API</text>
+    <text x="1385" y="386" font-size="16" font-weight="normal">reasoning only</text>
+    <text x="1385" y="408" font-size="16" font-weight="normal">no SAP credentials</text>
+  </g>
+  <line x1="1250" y1="368" x2="1284" y2="368" stroke="#44546A" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- MCP boundary -->
+  <line x1="510" y1="476" x2="510" y2="566" stroke="#44546A" stroke-width="3" marker-end="url(#arr)"/>
+  <line x1="20" y1="520" x2="1480" y2="520" stroke="#C00000" stroke-width="3" stroke-dasharray="14,9"/>
+  <rect x="560" y="500" width="700" height="40" fill="#FFFFFF"/>
+  <text x="910" y="528" text-anchor="middle" font-size="20" font-weight="bold" fill="#C00000">MCP boundary  ·  the agent can only call defined tools</text>
+
+  <!-- Tool server -->
+  <rect x="250" y="570" width="1000" height="150" rx="12" fill="#FFF2CC" stroke="#BF9000" stroke-width="3"/>
+  <text x="750" y="606" text-anchor="middle" font-size="24" font-weight="bold" fill="#7F6000">SAP tool server  ·  tool gateway</text>
+  <g font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    <rect x="275" y="628" width="180" height="66" rx="8" fill="#BF9000"/><text x="365" y="656">Schema</text><text x="365" y="680">validation</text>
+    <rect x="470" y="628" width="180" height="66" rx="8" fill="#BF9000"/><text x="560" y="656">Authorisation</text><text x="560" y="680">level 0–3</text>
+    <rect x="665" y="628" width="180" height="66" rx="8" fill="#BF9000"/><text x="755" y="656">Environment</text><text x="755" y="680">check</text>
+    <rect x="860" y="628" width="180" height="66" rx="8" fill="#BF9000"/><text x="950" y="656">Timeout</text><text x="950" y="680">and retry</text>
+    <rect x="1055" y="628" width="170" height="66" rx="8" fill="#BF9000"/><text x="1140" y="656">Audit every</text><text x="1140" y="680">call</text>
+  </g>
+
+  <!-- Secrets -->
+  <rect x="1290" y="596" width="190" height="98" rx="10" fill="#7F7F7F"/>
+  <g font-size="19" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    <text x="1385" y="638">Secrets store</text>
+    <text x="1385" y="666" font-size="16" font-weight="normal">SAP credentials</text>
+  </g>
+  <line x1="1250" y1="645" x2="1284" y2="645" stroke="#44546A" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Adapters -->
+  <line x1="520" y1="720" x2="520" y2="772" stroke="#44546A" stroke-width="3" marker-end="url(#arr)"/>
+  <line x1="980" y1="720" x2="980" y2="772" stroke="#7F7F7F" stroke-width="3" stroke-dasharray="9,7" marker-end="url(#arr)"/>
+
+  <rect x="290" y="776" width="460" height="92" rx="10" fill="#548235"/>
+  <g fill="#FFFFFF" text-anchor="middle">
+    <text x="520" y="814" font-size="22" font-weight="bold">Simulated SAP adapter  ·  NOW</text>
+    <text x="520" y="844" font-size="17">scenario packs · every result labelled SIMULATED</text>
+  </g>
+
+  <rect x="770" y="776" width="460" height="92" rx="10" fill="#F2F2F2" stroke="#7F7F7F" stroke-width="3" stroke-dasharray="10,7"/>
+  <g fill="#404040" text-anchor="middle">
+    <text x="1000" y="814" font-size="22" font-weight="bold">Real SAP adapter  ·  LATER</text>
+    <text x="1000" y="844" font-size="17">OData and ADT over HTTPS · read-only first</text>
+  </g>
+
+  <line x1="1000" y1="868" x2="1000" y2="912" stroke="#7F7F7F" stroke-width="3" stroke-dasharray="9,7" marker-end="url(#arr)"/>
+  <rect x="770" y="916" width="460" height="74" rx="10" fill="#F2F2F2" stroke="#7F7F7F" stroke-width="3" stroke-dasharray="10,7"/>
+  <g fill="#404040" text-anchor="middle">
+    <text x="1000" y="948" font-size="21" font-weight="bold">SAP S/4HANA embedded EWM</text>
+    <text x="1000" y="974" font-size="17">not connected yet</text>
+  </g>
+</svg>

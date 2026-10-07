@@ -55,21 +55,39 @@ export const addMemberSchema = z.object({
   role: z.enum(PROJECT_ROLES),
 });
 
-export const createSapSystemSchema = z.object({
-  name: trimmed(120),
-  sid: z
-    .string()
-    .trim()
-    .toUpperCase()
-    .regex(/^[A-Z][A-Z0-9]{2}$/, "A system ID is 3 characters, for example S4D"),
-  client: z
-    .string()
-    .trim()
-    .regex(/^\d{3}$/, "A client is 3 digits, for example 100"),
-  environment: z.enum(ENVIRONMENT_KINDS),
-  deployment: z.enum(EWM_DEPLOYMENTS).default("embedded"),
-  adapter: z.enum(SAP_ADAPTERS).default("simulated"),
-});
+export const DEFAULT_SANDBOX_URL = "https://sandbox.api.sap.com/s4hanacloud";
+
+export const createSapSystemSchema = z
+  .object({
+    name: trimmed(120),
+    /** Simulated systems only. The API sandbox has no system ID or client of its own. */
+    sid: z
+      .string()
+      .trim()
+      .toUpperCase()
+      .regex(/^[A-Z][A-Z0-9]{2}$/, "A system ID is 3 characters, for example S4D")
+      .optional(),
+    client: z
+      .string()
+      .trim()
+      .regex(/^\d{3}$/, "A client is 3 digits, for example 100")
+      .optional(),
+    environment: z.enum(ENVIRONMENT_KINDS).default("DEV"),
+    deployment: z.enum(EWM_DEPLOYMENTS).default("embedded"),
+    adapter: z.enum(SAP_ADAPTERS).default("simulated"),
+    /** SAP API sandbox only: where the sandbox is reached and the key SAP issued to you. */
+    baseUrl: z.string().trim().max(300).optional(),
+    apiKey: z.string().trim().min(8, "Paste the complete API key").max(200).optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (value.adapter === "simulated") {
+      if (!value.sid) ctx.addIssue({ code: "custom", path: ["sid"], message: "Enter a system ID" });
+      if (!value.client) ctx.addIssue({ code: "custom", path: ["client"], message: "Enter a client" });
+    }
+    if (value.adapter === "sap_api_sandbox" && !value.apiKey) {
+      ctx.addIssue({ code: "custom", path: ["apiKey"], message: "Paste your API key from api.sap.com" });
+    }
+  });
 export type CreateSapSystemInput = z.infer<typeof createSapSystemSchema>;
 
 export const createTicketSchema = z.object({
@@ -92,6 +110,24 @@ export const commentSchema = z.object({ body: trimmed(10000) });
 export const changeTicketStatusSchema = z.object({
   status: z.enum(TICKET_STATUSES),
   note: z.string().trim().max(2000).optional(),
+});
+
+export const updateSapCredentialSchema = z.object({ apiKey: z.string().trim().min(8, "Paste the complete API key").max(200) });
+
+export const runToolSchema = z.object({
+  input: z.record(z.string(), z.unknown()).default({}),
+  ticketId: z.uuid().optional(),
+});
+
+export const createApiTokenSchema = z.object({
+  name: trimmed(80),
+  /** Days until the token stops working. */
+  expiresInDays: z.coerce.number().int().min(1).max(365).default(90),
+});
+
+export const toolCallListQuerySchema = z.object({
+  sapSystemId: z.uuid().optional(),
+  limit: z.coerce.number().int().min(1).max(200).default(50),
 });
 
 export const pageQuerySchema = z.object({

@@ -6,8 +6,13 @@ export type ProjectRole = (typeof PROJECT_ROLES)[number];
 export const ENVIRONMENT_KINDS = ["DEV", "QAS", "PROD"] as const;
 export type EnvironmentKind = (typeof ENVIRONMENT_KINDS)[number];
 
-/** How the platform reaches a system. Only "simulated" can be created until Milestone 6. */
-export const SAP_ADAPTERS = ["simulated", "sap"] as const;
+/**
+ * How the platform reaches a system.
+ *   simulated        built-in stand-in driven by scenario packs; no SAP involved
+ *   sap_api_sandbox  SAP's public API sandbox: real SAP responses, SAP demo data, read-only
+ *   sap              a customer SAP system; cannot be registered until Milestone 6
+ */
+export const SAP_ADAPTERS = ["simulated", "sap", "sap_api_sandbox"] as const;
 export type SapAdapter = (typeof SAP_ADAPTERS)[number];
 
 export const EWM_DEPLOYMENTS = ["embedded", "decentralized"] as const;
@@ -55,7 +60,8 @@ export const INVESTIGATION_STATUSES = [
 ] as const;
 
 export const TOOL_CALL_STATUSES = ["ok", "error", "timeout", "rejected"] as const;
-export const DATA_SOURCES = ["SIMULATED", "SAP"] as const;
+/** Where a tool result came from. Shown on every result; a simulated result never passes as real. */
+export const DATA_SOURCES = ["SIMULATED", "SAP", "SAP_SANDBOX"] as const;
 export type DataSource = (typeof DATA_SOURCES)[number];
 
 export const EVIDENCE_KINDS = ["tool_result", "document", "lead"] as const;

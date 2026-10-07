@@ -5,7 +5,6 @@ import {
   changeTicketStatusSchema,
   commentSchema,
   createProjectSchema,
-  createSapSystemSchema,
   createTicketSchema,
   pageQuerySchema,
   TICKET_STATUSES,
@@ -15,7 +14,6 @@ import { parse, requireUser, type AppDeps } from "../context";
 import { notFound } from "../errors";
 import { listAuditLogs } from "../services/audit-logs";
 import * as projects from "../services/projects";
-import * as sapSystems from "../services/sap-systems";
 import * as tickets from "../services/tickets";
 
 type P = { Params: { projectId: string } };
@@ -95,32 +93,8 @@ export function projectRoutes(app: FastifyInstance, { db }: AppDeps) {
     return { ok: true };
   });
 
-  // ------------------------------------------------------------ SAP systems
-  app.get<P>("/projects/:projectId/sap-systems", async (req) => {
-    const { project } = await requireProjectAccess(
-      db,
-      requireUser(req),
-      req.params.projectId,
-      "project.view",
-    );
-    return { sapSystems: await sapSystems.listSapSystems(db, project.id) };
-  });
-
-  app.post<P>("/projects/:projectId/sap-systems", async (req, reply) => {
-    const user = requireUser(req);
-    const { project } = await requireProjectAccess(
-      db,
-      user,
-      req.params.projectId,
-      "sap_system.manage",
-    );
-    const input = parse(createSapSystemSchema, req.body);
-    const sapSystem = await sapSystems.createSapSystem(db, user, project.id, input, { ip: req.ip });
-    return reply.code(201).send({ sapSystem });
-  });
-
   // ------------------------------------------------------------ tickets
-  app.get<P>("/projects/:projectId/tickets", async (req) => {
+  app.get<P>("/projects/:projectId/tickets", { config: { tokenAllowed: true } }, async (req) => {
     const { project } = await requireProjectAccess(
       db,
       requireUser(req),
@@ -139,7 +113,7 @@ export function projectRoutes(app: FastifyInstance, { db }: AppDeps) {
     return reply.code(201).send({ ticket });
   });
 
-  app.get<PT>("/projects/:projectId/tickets/:ticketId", async (req) => {
+  app.get<PT>("/projects/:projectId/tickets/:ticketId", { config: { tokenAllowed: true } }, async (req) => {
     const { project } = await requireProjectAccess(
       db,
       requireUser(req),

@@ -30,6 +30,8 @@ export async function requireProjectAccess(
   action: ProjectAction,
 ): Promise<ProjectAccess> {
   if (!isUuid(projectId)) throw notFound("Project");
+  // An agent access token only ever sees the project it was created for.
+  if (user.token && user.token.projectId !== projectId) throw notFound("Project");
   const [project] = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1);
   if (!project) throw notFound("Project");
 
@@ -53,5 +55,5 @@ export async function requireProjectAccess(
 }
 
 export function requireOrgAdmin(user: AuthUser): void {
-  if (!user.isOrgAdmin) throw forbidden("Only an organisation administrator can do this.");
+  if (user.token || !user.isOrgAdmin) throw forbidden("Only an organisation administrator can do this.");
 }

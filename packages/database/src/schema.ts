@@ -252,7 +252,10 @@ export const apiTokens = pgTable(
     lastUsedAt: ts("last_used_at"),
     revokedAt: ts("revoked_at"),
   },
-  (t) => [uniqueIndex("api_tokens_hash_unique").on(t.tokenHash), index("api_tokens_project_idx").on(t.projectId)],
+  (t) => [
+    uniqueIndex("api_tokens_hash_unique").on(t.tokenHash),
+    index("api_tokens_project_idx").on(t.projectId),
+  ],
 );
 
 // ---------------------------------------------------------------- tickets

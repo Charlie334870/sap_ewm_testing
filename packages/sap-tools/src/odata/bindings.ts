@@ -69,31 +69,65 @@ export type ServiceKey = keyof typeof SERVICES;
  * What each binding needs from a service: the entity sets it reads and the properties it filters
  * on. The connection test checks these against the system's $metadata.
  */
-export const SERVICE_USAGE: Record<ServiceKey, { tools: ToolName[]; entitySets: Record<string, string[]> }> = {
+export const SERVICE_USAGE: Record<
+  ServiceKey,
+  { tools: ToolName[]; entitySets: Record<string, string[]> }
+> = {
   outboundDeliveryOrder: {
     tools: ["get_delivery"],
-    entitySets: { WhseOutboundDeliveryOrderHead: ["OutboundDeliveryOrder"], WhseOutboundDeliveryOrderItem: ["OutboundDeliveryOrder"] },
+    entitySets: {
+      WhseOutboundDeliveryOrderHead: ["OutboundDeliveryOrder"],
+      WhseOutboundDeliveryOrderItem: ["OutboundDeliveryOrder"],
+    },
   },
   inboundDelivery: {
     tools: ["get_delivery"],
-    entitySets: { WhseInboundDeliveryHead: ["InboundDelivery"], WhseInboundDeliveryItem: ["InboundDelivery"] },
+    entitySets: {
+      WhseInboundDeliveryHead: ["InboundDelivery"],
+      WhseInboundDeliveryItem: ["InboundDelivery"],
+    },
   },
   orderTask: {
     tools: ["get_warehouse_tasks", "get_warehouse_order"],
     entitySets: {
-      WarehouseTask: ["Warehouse", "WarehouseTask", "WarehouseOrder", "Delivery", "SourceHandlingUnit", "DestinationHandlingUnit"],
+      WarehouseTask: [
+        "Warehouse",
+        "WarehouseTask",
+        "WarehouseOrder",
+        "Delivery",
+        "SourceHandlingUnit",
+        "DestinationHandlingUnit",
+      ],
       WarehouseOrder: ["Warehouse", "WarehouseOrder"],
     },
   },
-  handlingUnit: { tools: ["get_handling_unit"], entitySets: { HandlingUnit: ["HandlingUnitExternalID", "Warehouse"] } },
+  handlingUnit: {
+    tools: ["get_handling_unit"],
+    entitySets: { HandlingUnit: ["HandlingUnitExternalID", "Warehouse"] },
+  },
   availableStock: {
     tools: ["get_stock"],
-    entitySets: { WarehouseAvailableStock: ["EWMWarehouse", "Product", "EWMStorageType", "EWMStorageBin", "Batch"] },
+    entitySets: {
+      WarehouseAvailableStock: [
+        "EWMWarehouse",
+        "Product",
+        "EWMStorageType",
+        "EWMStorageBin",
+        "Batch",
+      ],
+    },
   },
-  storageBin: { tools: ["get_storage_bin"], entitySets: { WarehouseStorageBin: ["Warehouse", "StorageBin"] } },
+  storageBin: {
+    tools: ["get_storage_bin"],
+    entitySets: { WarehouseStorageBin: ["Warehouse", "StorageBin"] },
+  },
 };
 
-type Binding<N extends ToolName> = (client: ODataClient, input: ToolInput<N>, signal: AbortSignal) => Promise<ToolOutput<N>>;
+type Binding<N extends ToolName> = (
+  client: ODataClient,
+  input: ToolInput<N>,
+  signal: AbortSignal,
+) => Promise<ToolOutput<N>>;
 
 const rowsOf = (value: unknown): ODataRow[] => (Array.isArray(value) ? (value as ODataRow[]) : []);
 
@@ -107,13 +141,23 @@ const getDelivery: Binding<"get_delivery"> = async (client, input, signal) => {
   const itemSet = outbound ? "WhseOutboundDeliveryOrderItem" : "WhseInboundDeliveryItem";
   const itemNav = `to_${itemSet}`;
 
-  const [head] = await client.read(service, headSet, { filter: equals(key, input.delivery), expand: [itemNav], top: 1 }, signal);
+  const [head] = await client.read(
+    service,
+    headSet,
+    { filter: equals(key, input.delivery), expand: [itemNav], top: 1 },
+    signal,
+  );
   if (!head) return { found: false, delivery: null };
 
   // If the service ignored $expand, read the items on their own.
   const items = Array.isArray(head[itemNav])
     ? rowsOf(head[itemNav])
-    : await client.read(service, itemSet, { filter: equals(key, input.delivery), top: 200 }, signal);
+    : await client.read(
+        service,
+        itemSet,
+        { filter: equals(key, input.delivery), top: 200 },
+        signal,
+      );
 
   return {
     found: true,
@@ -129,8 +173,12 @@ const getDelivery: Binding<"get_delivery"> = async (client, input, signal) => {
       lastChangedAt: dateTime(head.LastChangeDateTime),
       items: items.map((item) => ({
         item: text(item[`${key}Item`]) ?? "",
-        itemType: text(outbound ? item.OutboundDeliveryOrderItemType : item.InboundDeliveryItemType),
-        itemCategory: text(outbound ? item.OutbDeliveryOrderItemCategory : item.DeliveryItemCategory),
+        itemType: text(
+          outbound ? item.OutboundDeliveryOrderItemType : item.InboundDeliveryItemType,
+        ),
+        itemCategory: text(
+          outbound ? item.OutbDeliveryOrderItemCategory : item.DeliveryItemCategory,
+        ),
         product: text(item.Product),
         batch: text(item.ProductBatch),
         quantity: number(item.ProductQuantity),
@@ -206,14 +254,27 @@ const getWarehouseTasks: Binding<"get_warehouse_tasks"> = async (client, input, 
     input.handlingUnit &&
       `(${equals("SourceHandlingUnit", input.handlingUnit)} or ${equals("DestinationHandlingUnit", input.handlingUnit)})`,
   );
-  const rows = await client.read(SERVICES.orderTask, "WarehouseTask", { filter, top: input.limit + 1 }, signal);
+  const rows = await client.read(
+    SERVICES.orderTask,
+    "WarehouseTask",
+    { filter, top: input.limit + 1 },
+    signal,
+  );
   const tasks = rows.slice(0, input.limit).map(mapTask);
   return { count: tasks.length, truncated: rows.length > input.limit, tasks };
 };
 
 const getWarehouseOrder: Binding<"get_warehouse_order"> = async (client, input, signal) => {
-  const filter = and(equals("Warehouse", input.warehouse), equals("WarehouseOrder", input.warehouseOrder));
-  const [order] = await client.read(SERVICES.orderTask, "WarehouseOrder", { filter, expand: ["to_WarehouseTask"], top: 1 }, signal);
+  const filter = and(
+    equals("Warehouse", input.warehouse),
+    equals("WarehouseOrder", input.warehouseOrder),
+  );
+  const [order] = await client.read(
+    SERVICES.orderTask,
+    "WarehouseOrder",
+    { filter, expand: ["to_WarehouseTask"], top: 1 },
+    signal,
+  );
   if (!order) return { found: false, warehouseOrder: null };
   const tasks = Array.isArray(order.to_WarehouseTask)
     ? rowsOf(order.to_WarehouseTask)
@@ -240,8 +301,16 @@ const getWarehouseOrder: Binding<"get_warehouse_order"> = async (client, input, 
 // ------------------------------------------------------------------ handling unit, stock, bin
 
 const getHandlingUnit: Binding<"get_handling_unit"> = async (client, input, signal) => {
-  const filter = and(equals("HandlingUnitExternalID", input.handlingUnit), equals("Warehouse", input.warehouse));
-  const [hu] = await client.read(SERVICES.handlingUnit, "HandlingUnit", { filter, expand: ["to_HandlingUnitItem"], top: 1 }, signal);
+  const filter = and(
+    equals("HandlingUnitExternalID", input.handlingUnit),
+    equals("Warehouse", input.warehouse),
+  );
+  const [hu] = await client.read(
+    SERVICES.handlingUnit,
+    "HandlingUnit",
+    { filter, expand: ["to_HandlingUnitItem"], top: 1 },
+    signal,
+  );
   if (!hu) return { found: false, handlingUnit: null };
   return {
     found: true,
@@ -281,7 +350,12 @@ const getStock: Binding<"get_stock"> = async (client, input, signal) => {
     input.storageBin && equals("EWMStorageBin", input.storageBin),
     input.batch && equals("Batch", input.batch),
   );
-  const rows = await client.read(SERVICES.availableStock, "WarehouseAvailableStock", { filter, top: input.limit + 1 }, signal);
+  const rows = await client.read(
+    SERVICES.availableStock,
+    "WarehouseAvailableStock",
+    { filter, top: input.limit + 1 },
+    signal,
+  );
   const mapped = rows.slice(0, input.limit).map((row) => ({
     product: text(row.Product) ?? input.product,
     batch: text(row.Batch),
@@ -300,12 +374,22 @@ const getStock: Binding<"get_stock"> = async (client, input, signal) => {
     shelfLifeExpiration: text(row.ShelfLifeExpirationDate),
     sapFields: scalars(row),
   }));
-  return { basis: "available_only", count: mapped.length, truncated: rows.length > input.limit, rows: mapped };
+  return {
+    basis: "available_only",
+    count: mapped.length,
+    truncated: rows.length > input.limit,
+    rows: mapped,
+  };
 };
 
 const getStorageBin: Binding<"get_storage_bin"> = async (client, input, signal) => {
   const filter = and(equals("Warehouse", input.warehouse), equals("StorageBin", input.storageBin));
-  const [bin] = await client.read(SERVICES.storageBin, "WarehouseStorageBin", { filter, top: 1 }, signal);
+  const [bin] = await client.read(
+    SERVICES.storageBin,
+    "WarehouseStorageBin",
+    { filter, top: 1 },
+    signal,
+  );
   if (!bin) return { found: false, storageBin: null };
   return {
     found: true,
@@ -366,6 +450,7 @@ export function unsupportedReason(toolName: string): string | null {
 
 export function requireBinding<N extends ToolName>(toolName: N): Binding<N> {
   const binding = BINDINGS[toolName] as Binding<N> | undefined;
-  if (!binding) throw new AdapterError("not_supported", unsupportedReason(toolName) ?? "Not supported.");
+  if (!binding)
+    throw new AdapterError("not_supported", unsupportedReason(toolName) ?? "Not supported.");
   return binding;
 }

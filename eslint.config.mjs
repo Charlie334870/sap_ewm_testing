@@ -20,4 +20,9 @@ export default tseslint.config(
       "@typescript-eslint/consistent-type-imports": "error",
     },
   },
+  {
+    // Test files inspect loosely typed JSON answers.
+    files: ["**/*.test.ts"],
+    rules: { "@typescript-eslint/no-explicit-any": "off" },
+  },
 );

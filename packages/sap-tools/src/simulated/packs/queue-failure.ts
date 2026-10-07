@@ -26,9 +26,18 @@ export const queueFailure: ScenarioPack = {
         lastChangedAt: "2026-10-05T15:12:00.000Z",
         items: [
           deliveryItem("10", "P-2000", 12, {
-            statuses: { goodsMovement: S.completed, planning: S.completed, execution: S.completed, completion: S.completed },
+            statuses: {
+              goodsMovement: S.completed,
+              planning: S.completed,
+              execution: S.completed,
+              completion: S.completed,
+            },
             goodsMovementBin: "GI-ZONE-01",
-            reference: { salesOrder: "4501002", purchasingDocument: null, manufacturingOrder: null },
+            reference: {
+              salesOrder: "4501002",
+              purchasingDocument: null,
+              manufacturingOrder: null,
+            },
           }),
         ],
       },
@@ -55,8 +64,18 @@ export const queueFailure: ScenarioPack = {
         delivery: "80001002",
         deliveryItem: "10",
         quantity: { target: 12, actual: 12, difference: 0, unit: "EA" },
-        source: { storageType: "0020", storageSection: "0001", storageBin: "0020-02-05-B", handlingUnit: null },
-        destination: { storageType: "9020", storageSection: "0001", storageBin: "GI-ZONE-01", handlingUnit: null },
+        source: {
+          storageType: "0020",
+          storageSection: "0001",
+          storageBin: "0020-02-05-B",
+          handlingUnit: null,
+        },
+        destination: {
+          storageType: "9020",
+          storageSection: "0001",
+          storageBin: "GI-ZONE-01",
+          handlingUnit: null,
+        },
         activityArea: "A020",
         executingResource: "RF-03",
         createdAt: "2026-10-05T13:20:00.000Z",
@@ -76,9 +95,24 @@ export const queueFailure: ScenarioPack = {
       },
     ],
     logs: [
-      log("2026-10-05T13:20:00.000Z", "success", "80001002", "Warehouse task 100001002 created for item 10."),
-      log("2026-10-05T15:12:00.000Z", "success", "80001002", "Goods issue posted for outbound delivery order 80001002."),
-      log("2026-10-05T15:12:02.000Z", "info", "80001002", "Goods issue message for the ERP delivery handed over to the queue."),
+      log(
+        "2026-10-05T13:20:00.000Z",
+        "success",
+        "80001002",
+        "Warehouse task 100001002 created for item 10.",
+      ),
+      log(
+        "2026-10-05T15:12:00.000Z",
+        "success",
+        "80001002",
+        "Goods issue posted for outbound delivery order 80001002.",
+      ),
+      log(
+        "2026-10-05T15:12:02.000Z",
+        "info",
+        "80001002",
+        "Goods issue message for the ERP delivery handed over to the queue.",
+      ),
     ],
   },
 };

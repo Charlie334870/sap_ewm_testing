@@ -27,7 +27,8 @@ export interface ODataConnection {
 /** Quotes a value for use in $filter. A single quote inside the value is doubled, as OData requires. */
 export const quote = (value: string) => `'${value.replace(/'/g, "''")}'`;
 export const equals = (field: string, value: string) => `${field} eq ${quote(value)}`;
-export const and = (...parts: Array<string | undefined | false>) => parts.filter(Boolean).join(" and ");
+export const and = (...parts: Array<string | undefined | false>) =>
+  parts.filter(Boolean).join(" and ");
 
 /**
  * Minimal read-only OData client for SAP services, versions 2 and 4.
@@ -42,11 +43,17 @@ export class ODataClient {
   }
 
   /** Reads rows of one entity set. Navigation properties that were expanded come back as arrays. */
-  async read(service: ODataService, entitySet: string, query: ODataQuery, signal: AbortSignal): Promise<ODataRow[]> {
+  async read(
+    service: ODataService,
+    entitySet: string,
+    query: ODataQuery,
+    signal: AbortSignal,
+  ): Promise<ODataRow[]> {
     const params: string[] = [];
     if (service.version === "v2") params.push("$format=json");
     if (query.filter) params.push(`$filter=${encodeURIComponent(query.filter)}`);
-    if (query.expand?.length) params.push(`$expand=${query.expand.map(encodeURIComponent).join(",")}`);
+    if (query.expand?.length)
+      params.push(`$expand=${query.expand.map(encodeURIComponent).join(",")}`);
     if (query.top) params.push(`$top=${query.top}`);
     const url = `${this.serviceUrl(service)}/${entitySet}${params.length ? `?${params.join("&")}` : ""}`;
 
@@ -57,9 +64,13 @@ export class ODataClient {
     } catch {
       throw new AdapterError("unexpected_data", `${service.id} did not answer with JSON.`);
     }
-    const rows = service.version === "v2" ? unwrapV2(parsed) : (parsed as { value?: unknown })?.value;
+    const rows =
+      service.version === "v2" ? unwrapV2(parsed) : (parsed as { value?: unknown })?.value;
     if (!Array.isArray(rows)) {
-      throw new AdapterError("unexpected_data", `${service.id} answered in a shape that is not an OData collection.`);
+      throw new AdapterError(
+        "unexpected_data",
+        `${service.id} answered in a shape that is not an OData collection.`,
+      );
     }
     return rows.map((row) => cleanRow(row as ODataRow));
   }
@@ -73,7 +84,12 @@ export class ODataClient {
     return `${this.connection.baseUrl.replace(/\/+$/, "")}${service.path}`;
   }
 
-  private async get(url: string, accept: string, service: ODataService, signal: AbortSignal): Promise<string> {
+  private async get(
+    url: string,
+    accept: string,
+    service: ODataService,
+    signal: AbortSignal,
+  ): Promise<string> {
     let response: Response;
     try {
       response = await this.fetchImpl(url, {
@@ -84,7 +100,11 @@ export class ODataClient {
       });
     } catch (err) {
       if (signal.aborted) throw err;
-      throw new AdapterError("network", `Could not reach SAP for ${service.id}: ${(err as Error).message}`, true);
+      throw new AdapterError(
+        "network",
+        `Could not reach SAP for ${service.id}: ${(err as Error).message}`,
+        true,
+      );
     }
     const text = await response.text();
     if (response.ok) return text;
@@ -93,7 +113,7 @@ export class ODataClient {
     if (response.status === 401 || response.status === 403) {
       throw new AdapterError(
         "authentication_failed",
-        `SAP refused access to ${service.id} (HTTP ${response.status}).${detail ? ` ${detail}` : ""}`,
+        `Access to ${service.id} was refused (HTTP ${response.status}).${detail ? ` ${detail}` : ""}`,
       );
     }
     if (response.status === 404) {
@@ -132,7 +152,9 @@ function cleanRow(row: ODataRow): ODataRow {
       out[key] = cleanRow(value as ODataRow);
       continue;
     }
-    out[key] = Array.isArray(value) ? value.map((r) => (r && typeof r === "object" ? cleanRow(r as ODataRow) : r)) : value;
+    out[key] = Array.isArray(value)
+      ? value.map((r) => (r && typeof r === "object" ? cleanRow(r as ODataRow) : r))
+      : value;
   }
   return out;
 }
@@ -142,11 +164,15 @@ function sapErrorMessage(body: string): string {
   try {
     const error = (JSON.parse(body) as { error?: { message?: unknown } }).error;
     const message = error?.message;
-    const text = typeof message === "string" ? message : (message as { value?: string } | undefined)?.value;
+    const text =
+      typeof message === "string" ? message : (message as { value?: string } | undefined)?.value;
     return text ? text.slice(0, 300) : "";
   } catch {
     const match = /<message[^>]*>([^<]+)<\/message>/i.exec(body);
-    return match?.[1]?.slice(0, 300) ?? "";
+    if (match?.[1]) return match[1].slice(0, 300);
+    // A short plain-text body usually comes from a proxy or gateway in between, and says why.
+    const plain = body.trim();
+    return plain && plain.length <= 200 && !plain.startsWith("<") ? plain : "";
   }
 }
 

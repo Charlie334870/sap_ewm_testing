@@ -82,10 +82,15 @@ export const createSapSystemSchema = z
   .superRefine((value, ctx) => {
     if (value.adapter === "simulated") {
       if (!value.sid) ctx.addIssue({ code: "custom", path: ["sid"], message: "Enter a system ID" });
-      if (!value.client) ctx.addIssue({ code: "custom", path: ["client"], message: "Enter a client" });
+      if (!value.client)
+        ctx.addIssue({ code: "custom", path: ["client"], message: "Enter a client" });
     }
     if (value.adapter === "sap_api_sandbox" && !value.apiKey) {
-      ctx.addIssue({ code: "custom", path: ["apiKey"], message: "Paste your API key from api.sap.com" });
+      ctx.addIssue({
+        code: "custom",
+        path: ["apiKey"],
+        message: "Paste your API key from api.sap.com",
+      });
     }
   });
 export type CreateSapSystemInput = z.infer<typeof createSapSystemSchema>;
@@ -112,7 +117,9 @@ export const changeTicketStatusSchema = z.object({
   note: z.string().trim().max(2000).optional(),
 });
 
-export const updateSapCredentialSchema = z.object({ apiKey: z.string().trim().min(8, "Paste the complete API key").max(200) });
+export const updateSapCredentialSchema = z.object({
+  apiKey: z.string().trim().min(8, "Paste the complete API key").max(200),
+});
 
 export const runToolSchema = z.object({
   input: z.record(z.string(), z.unknown()).default({}),

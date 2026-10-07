@@ -6,7 +6,10 @@ import { ODataClient, type ODataConnection } from "./client";
 /** Hosts a sandbox connection may point at. Anything else is refused before a request is made. */
 export const SANDBOX_HOSTS = ["sandbox.api.sap.com"];
 
-export function assertSandboxUrl(baseUrl: string, allowedHosts: readonly string[] = SANDBOX_HOSTS): URL {
+export function assertSandboxUrl(
+  baseUrl: string,
+  allowedHosts: readonly string[] = SANDBOX_HOSTS,
+): URL {
   let url: URL;
   try {
     url = new URL(baseUrl);
@@ -15,7 +18,9 @@ export function assertSandboxUrl(baseUrl: string, allowedHosts: readonly string[
   }
   if (url.protocol !== "https:") throw new Error("The address must start with https://.");
   if (!allowedHosts.includes(url.hostname)) {
-    throw new Error(`Only SAP's API sandbox can be connected in this build (${allowedHosts.join(", ")}).`);
+    throw new Error(
+      `Only SAP's API sandbox can be connected in this build (${allowedHosts.join(", ")}).`,
+    );
   }
   return url;
 }
@@ -45,7 +50,11 @@ export class SapApiSandboxAdapter implements SapAdapter {
   }
 
   async execute(toolName: string, input: unknown, signal: AbortSignal): Promise<unknown> {
-    const binding = requireBinding(toolName as ToolName) as (c: ODataClient, i: unknown, s: AbortSignal) => Promise<unknown>;
+    const binding = requireBinding(toolName as ToolName) as (
+      c: ODataClient,
+      i: unknown,
+      s: AbortSignal,
+    ) => Promise<unknown>;
     return binding(this.client, input, signal);
   }
 }

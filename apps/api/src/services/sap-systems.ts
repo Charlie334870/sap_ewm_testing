@@ -45,9 +45,13 @@ const publicColumns = {
 
 /** Which tools a connection can run, before any connection test: decided by the kind of connection. */
 async function toolAvailability(deps: AppDeps, system: typeof sapSystems.$inferSelect) {
-  if (system.adapter === "simulated") return TOOLS.map((t) => ({ name: t.name, available: true, reason: null as string | null }));
+  if (system.adapter === "simulated")
+    return TOOLS.map((t) => ({ name: t.name, available: true, reason: null as string | null }));
   // No network call: a throwaway adapter only answers "is there a binding for this tool".
-  const probe = new SapApiSandboxAdapter({ baseUrl: system.baseUrl ?? DEFAULT_SANDBOX_URL, headers: {} });
+  const probe = new SapApiSandboxAdapter({
+    baseUrl: system.baseUrl ?? DEFAULT_SANDBOX_URL,
+    headers: {},
+  });
   return TOOLS.map((t) => {
     const reason = probe.unsupportedReason(t.name);
     return { name: t.name, available: reason === null, reason };
@@ -90,7 +94,12 @@ export async function getSapSystem(deps: AppDeps, projectId: string, sapSystemId
     tools: await toolAvailability(deps, system),
     scenarios:
       system.adapter === "simulated"
-        ? SCENARIO_PACKS.map((p) => ({ id: p.id, useCase: p.useCase, title: p.title, ticketTitle: p.ticket.title }))
+        ? SCENARIO_PACKS.map((p) => ({
+            id: p.id,
+            useCase: p.useCase,
+            title: p.title,
+            ticketTitle: p.ticket.title,
+          }))
         : [],
   };
 }
@@ -115,7 +124,9 @@ export async function createSapSystem(
   let values: { sid: string; client: string; baseUrl: string | null; secret: string | null };
   if (input.adapter === "sap_api_sandbox") {
     if (!deps.secrets) {
-      throw badRequest("The server has no SECRETS_KEY, so it cannot store an API key safely. Add SECRETS_KEY to .env and restart (docs/SETUP.md).");
+      throw badRequest(
+        "The server has no SECRETS_KEY, so it cannot store an API key safely. Add SECRETS_KEY to .env and restart (docs/SETUP.md).",
+      );
     }
     if (input.environment !== "DEV") {
       throw badRequest("SAP's API sandbox holds demo data. Register it in the DEV environment.");
@@ -124,10 +135,17 @@ export async function createSapSystem(
     try {
       assertSandboxUrl(baseUrl, deps.sandboxHosts);
     } catch (err) {
-      throw badRequest((err as Error).message, [{ field: "baseUrl", message: (err as Error).message }]);
+      throw badRequest((err as Error).message, [
+        { field: "baseUrl", message: (err as Error).message },
+      ]);
     }
     // The sandbox has no system ID or client. These fixed values mark it as "not a real system".
-    values = { sid: "SBX", client: "000", baseUrl: baseUrl.replace(/\/+$/, ""), secret: deps.secrets.encrypt(input.apiKey!) };
+    values = {
+      sid: "SBX",
+      client: "000",
+      baseUrl: baseUrl.replace(/\/+$/, ""),
+      secret: deps.secrets.encrypt(input.apiKey!),
+    };
   } else {
     values = { sid: input.sid!, client: input.client!, baseUrl: null, secret: null };
   }
@@ -213,9 +231,11 @@ export async function updateCredential(
   apiKey: string,
   opts: { ip?: string | null } = {},
 ) {
-  if (!deps.secrets) throw badRequest("The server has no SECRETS_KEY. Add it to .env and restart (docs/SETUP.md).");
+  if (!deps.secrets)
+    throw badRequest("The server has no SECRETS_KEY. Add it to .env and restart (docs/SETUP.md).");
   const system = await getSapSystem(deps, projectId, sapSystemId);
-  if (system.adapter !== "sap_api_sandbox") throw badRequest("Only a sandbox connection has an API key.");
+  if (system.adapter !== "sap_api_sandbox")
+    throw badRequest("Only a sandbox connection has an API key.");
   const secretEncrypted = deps.secrets.encrypt(apiKey);
   await deps.db.transaction(async (tx) => {
     await tx
@@ -251,7 +271,9 @@ export async function testConnection(
     throw err;
   });
   if (system.adapter !== "sap_api_sandbox") {
-    throw badRequest("A simulated system has no connection to test. It always answers from its scenario packs.");
+    throw badRequest(
+      "A simulated system has no connection to test. It always answers from its scenario packs.",
+    );
   }
   let adapter;
   try {
@@ -261,7 +283,10 @@ export async function testConnection(
   }
   const check = await checkConnection((adapter as SapApiSandboxAdapter).client);
   await deps.db.transaction(async (tx) => {
-    await tx.update(sapSystems).set({ lastCheck: check, lastCheckedAt: new Date(check.checkedAt) }).where(eq(sapSystems.id, system.id));
+    await tx
+      .update(sapSystems)
+      .set({ lastCheck: check, lastCheckedAt: new Date(check.checkedAt) })
+      .where(eq(sapSystems.id, system.id));
     await appendAudit(tx, {
       organizationId: actor.organizationId,
       projectId,
@@ -272,7 +297,8 @@ export async function testConnection(
       data: {
         name: system.name,
         reachable: check.reachable,
-        servicesOk: check.services.filter((s) => s.usedByTools.length > 0 && s.state === "ok").length,
+        servicesOk: check.services.filter((s) => s.usedByTools.length > 0 && s.state === "ok")
+          .length,
         toolsAvailable: check.tools.filter((t) => t.available).length,
       },
       ip: opts.ip,
@@ -290,7 +316,8 @@ export async function createSampleTickets(
   opts: { ip?: string | null } = {},
 ) {
   const system = await getSapSystem(deps, projectId, sapSystemId);
-  if (system.adapter !== "simulated") throw badRequest("Sample tickets belong to the scenario packs of a simulated system.");
+  if (system.adapter !== "simulated")
+    throw badRequest("Sample tickets belong to the scenario packs of a simulated system.");
   const titles = SCENARIO_PACKS.map((p) => p.ticket.title);
   const existing = await deps.db
     .select({ title: tickets.title })

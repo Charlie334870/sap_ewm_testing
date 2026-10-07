@@ -47,7 +47,11 @@ const listColumns = {
   ticketNumber: tickets.number,
 };
 
-export function listToolCalls(db: Database, projectId: string, filter: { sapSystemId?: string; limit: number }) {
+export function listToolCalls(
+  db: Database,
+  projectId: string,
+  filter: { sapSystemId?: string; limit: number },
+) {
   return db
     .select(listColumns)
     .from(sapToolCalls)
@@ -55,7 +59,12 @@ export function listToolCalls(db: Database, projectId: string, filter: { sapSyst
     .leftJoin(users, eq(users.id, sapToolCalls.calledByUserId))
     .leftJoin(apiTokens, eq(apiTokens.id, sapToolCalls.apiTokenId))
     .leftJoin(tickets, eq(tickets.id, sapToolCalls.ticketId))
-    .where(and(eq(sapToolCalls.projectId, projectId), filter.sapSystemId ? eq(sapToolCalls.sapSystemId, filter.sapSystemId) : undefined))
+    .where(
+      and(
+        eq(sapToolCalls.projectId, projectId),
+        filter.sapSystemId ? eq(sapToolCalls.sapSystemId, filter.sapSystemId) : undefined,
+      ),
+    )
     .orderBy(desc(sapToolCalls.createdAt))
     .limit(filter.limit);
 }

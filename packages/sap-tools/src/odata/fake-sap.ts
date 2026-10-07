@@ -88,7 +88,10 @@ export function fakeRow(entitySet: string, values: FakeRow): FakeRow {
     }
   }
   return Object.fromEntries(
-    found.entity.fields.map((f) => [f.name, f.name in values ? values[f.name] : neutralValue(f, found.service.odataVersion)]),
+    found.entity.fields.map((f) => [
+      f.name,
+      f.name in values ? values[f.name] : neutralValue(f, found.service.odataVersion),
+    ]),
   );
 }
 
@@ -110,7 +113,8 @@ function matches(row: FakeRow, filter: string, properties: string[]): boolean {
   const term = (t: string): boolean => {
     const m = /^(\w+) eq '((?:[^']|'')*)'$/.exec(t.trim());
     if (!m) throw new FilterError(`Unsupported filter expression: ${t}`);
-    if (!properties.includes(m[1]!)) throw new FilterError(`Property ${m[1]} is not defined for this entity.`);
+    if (!properties.includes(m[1]!))
+      throw new FilterError(`Property ${m[1]} is not defined for this entity.`);
     return String(row[m[1]!] ?? "") === m[2]!.replace(/''/g, "'");
   };
   return filter.split(" and ").every((part) => {
@@ -123,7 +127,12 @@ class FilterError extends Error {}
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 const sapError = (status: number, message: string, version: "v2" | "v4" = "v2") =>
-  json(status, version === "v2" ? { error: { code: "FAKE/000", message: { lang: "en", value: message } } } : { error: { code: "FAKE/000", message } });
+  json(
+    status,
+    version === "v2"
+      ? { error: { code: "FAKE/000", message: { lang: "en", value: message } } }
+      : { error: { code: "FAKE/000", message } },
+  );
 
 export function createFakeSap(options: FakeSapOptions = {}): FakeSap {
   const apiKey = options.apiKey ?? FAKE_API_KEY;
@@ -144,26 +153,36 @@ export function createFakeSap(options: FakeSapOptions = {}): FakeSap {
     const method = init?.method ?? "GET";
     requests.push({ url: url.toString(), method, headers });
 
-    if (method !== "GET") return sapError(405, "This fake only accepts GET, like the connector should only send.");
+    if (method !== "GET")
+      return sapError(405, "This fake only accepts GET, like the connector should only send.");
     if (options.failWith) return sapError(options.failWith, `Forced failure ${options.failWith}`);
     if (headers.apikey !== apiKey) return sapError(401, "Invalid API key.");
     if (!url.toString().startsWith(FAKE_BASE_URL)) return sapError(404, "Unknown host or prefix.");
     const path = decodeURIComponent(url.pathname.slice(new URL(FAKE_BASE_URL).pathname.length));
 
     for (const [servicePath, entities] of Object.entries(options.extraServices ?? {})) {
-      if (path === `${servicePath}/$metadata`) return new Response(metadataXml(entities), { status: 200 });
+      if (path === `${servicePath}/$metadata`)
+        return new Response(metadataXml(entities), { status: 200 });
     }
 
-    const entry = Object.entries(SERVICES).find(([, s]) => path === s.servicePath || path.startsWith(`${s.servicePath}/`));
-    if (!entry || options.removedServices?.includes(entry[0])) return sapError(404, "Service not found.");
+    const entry = Object.entries(SERVICES).find(
+      ([, s]) => path === s.servicePath || path.startsWith(`${s.servicePath}/`),
+    );
+    if (!entry || options.removedServices?.includes(entry[0]))
+      return sapError(404, "Service not found.");
     const [, service] = entry;
     const rest = path.slice(service.servicePath.length + 1);
 
     const exposed = (name: string) =>
-      service.entities[name]!.fields.map((f) => f.name).filter((p) => !(options.removedProperties?.[name] ?? []).includes(p));
+      service.entities[name]!.fields.map((f) => f.name).filter(
+        (p) => !(options.removedProperties?.[name] ?? []).includes(p),
+      );
 
     if (rest === "$metadata") {
-      return new Response(metadataXml(Object.fromEntries(Object.keys(service.entities).map((n) => [n, exposed(n)]))), { status: 200 });
+      return new Response(
+        metadataXml(Object.fromEntries(Object.keys(service.entities).map((n) => [n, exposed(n)]))),
+        { status: 200 },
+      );
     }
     const entity = service.entities[rest];
     if (!entity) return sapError(404, `Entity set ${rest} not found.`, service.odataVersion);
@@ -181,10 +200,14 @@ export function createFakeSap(options: FakeSapOptions = {}): FakeSap {
 
     const expand = (url.searchParams.get("$expand") ?? "").split(",").filter(Boolean);
     for (const nav of expand) {
-      if (!entity.navigation.includes(nav)) return sapError(400, `Navigation property ${nav} not found.`, service.odataVersion);
+      if (!entity.navigation.includes(nav))
+        return sapError(400, `Navigation property ${nav} not found.`, service.odataVersion);
     }
     const withNavigation = rows.map((row) => {
-      const out: FakeRow = service.odataVersion === "v2" ? { __metadata: { type: `FAKE.${rest}Type` }, ...row } : { ...row };
+      const out: FakeRow =
+        service.odataVersion === "v2"
+          ? { __metadata: { type: `FAKE.${rest}Type` }, ...row }
+          : { ...row };
       for (const nav of entity.navigation) {
         // SAP's navigation names follow "to_" + a (sometimes abbreviated) entity name.
         const target = Object.keys(service.entities).find((n) => `to_${n}` === nav);
@@ -192,14 +215,21 @@ export function createFakeSap(options: FakeSapOptions = {}): FakeSap {
           if (service.odataVersion === "v2") out[nav] = { __deferred: { uri: "deferred" } };
           continue;
         }
-        const shared = entity.keys.filter((k) => service.entities[target]!.fields.some((f) => f.name === k));
+        const shared = entity.keys.filter((k) =>
+          service.entities[target]!.fields.some((f) => f.name === k),
+        );
         const related = rowsOf(target).filter((r) => shared.every((k) => r[k] === row[k]));
         out[nav] = service.odataVersion === "v2" ? { results: related } : related;
       }
       return out;
     });
 
-    return json(200, service.odataVersion === "v2" ? { d: { results: withNavigation } } : { value: withNavigation });
+    return json(
+      200,
+      service.odataVersion === "v2"
+        ? { d: { results: withNavigation } }
+        : { value: withNavigation },
+    );
   };
 
   return { fetch: handler as typeof fetch, requests };

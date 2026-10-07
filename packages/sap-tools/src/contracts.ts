@@ -23,7 +23,13 @@ const warehouse = z
   .describe("EWM warehouse number, for example MUHW");
 
 const documentNumber = z.string().trim().min(1).max(40);
-const limit = z.coerce.number().int().min(1).max(200).default(50).describe("Maximum number of rows to return");
+const limit = z
+  .number()
+  .int()
+  .min(1)
+  .max(200)
+  .default(50)
+  .describe("Maximum number of rows to return");
 
 const status = z.object({ code: z.string().nullable(), text: z.string().nullable() }).nullable();
 export type Status = z.infer<typeof status>;
@@ -69,7 +75,11 @@ const delivery = z.object({
   number: z.string(),
   warehouse: z.string().nullable(),
   deliveryType: z.string().nullable(),
-  partner: z.object({ role: z.enum(["ship_to", "ship_from"]), id: z.string().nullable(), name: z.string().nullable() }),
+  partner: z.object({
+    role: z.enum(["ship_to", "ship_from"]),
+    id: z.string().nullable(),
+    name: z.string().nullable(),
+  }),
   plannedDeliveryAt: isoDateTime,
   lastChangedAt: isoDateTime,
   items: z.array(deliveryItem),
@@ -95,7 +105,12 @@ const warehouseTask = z.object({
   product: z.string().nullable(),
   batch: z.string().nullable(),
   stockType: z.string().nullable(),
-  quantity: z.object({ target: quantity, actual: quantity, difference: quantity, unit: z.string().nullable() }),
+  quantity: z.object({
+    target: quantity,
+    actual: quantity,
+    difference: quantity,
+    unit: z.string().nullable(),
+  }),
   source: location,
   destination: location,
   delivery: z.string().nullable(),
@@ -247,7 +262,9 @@ const ppfAction = z.object({
   processedAt: isoDateTime,
   /** Why the action was or was not scheduled, if the system says so. */
   determination: z.string().nullable(),
-  messages: z.array(z.object({ severity: z.enum(["error", "warning", "info", "success"]), text: z.string() })),
+  messages: z.array(
+    z.object({ severity: z.enum(["error", "warning", "info", "success"]), text: z.string() }),
+  ),
 });
 export type PpfAction = z.infer<typeof ppfAction>;
 
@@ -266,8 +283,10 @@ export type Dump = z.infer<typeof dump>;
 
 /** Named customizing areas. The tool reads these and nothing else; it is not a table reader. */
 export const CONFIGURATION_AREAS = {
-  wpt_determination: "Determination of the warehouse process type from document type, item type and indicators",
-  storage_type_search_sequence: "Storage type search sequences for stock removal and the storage types in each",
+  wpt_determination:
+    "Determination of the warehouse process type from document type, item type and indicators",
+  storage_type_search_sequence:
+    "Storage type search sequences for stock removal and the storage types in each",
   warehouse_order_creation_rules: "Warehouse order creation rules with their limits and filters",
   storage_types: "Storage types of the warehouse and their role",
   stock_types: "Stock types and whether each is available for picking",
@@ -302,7 +321,10 @@ export interface ToolDefinition<
 }
 
 function defineTool<const N extends string, I extends z.ZodType, O extends z.ZodType>(
-  tool: Pick<ToolDefinition<I, O, N>, "name" | "title" | "description" | "consultantEquivalent" | "input" | "output"> &
+  tool: Pick<
+    ToolDefinition<I, O, N>,
+    "name" | "title" | "description" | "consultantEquivalent" | "input" | "output"
+  > &
     Partial<Pick<ToolDefinition<I, O, N>, "timeoutMs" | "retries">>,
 ): ToolDefinition<I, O, N> {
   return {
@@ -323,7 +345,9 @@ export const getDelivery = defineTool({
     "warehouse process types and statuses. Start here when a ticket names a delivery.",
   consultantEquivalent: "/SCWM/PRDO, /SCWM/PRDI",
   input: z.object({
-    direction: z.enum(["outbound", "inbound"]).describe("outbound = outbound delivery order, inbound = inbound delivery"),
+    direction: z
+      .enum(["outbound", "inbound"])
+      .describe("outbound = outbound delivery order, inbound = inbound delivery"),
     delivery: documentNumber.describe("Delivery document number in the warehouse"),
   }),
   output: z.object({ found: z.boolean(), delivery: delivery.nullable() }),
@@ -354,7 +378,8 @@ export const getWarehouseTasks = defineTool({
 export const getWarehouseOrder = defineTool({
   name: "get_warehouse_order",
   title: "Warehouse order",
-  description: "Reads one warehouse order with its status, timing, resource and the warehouse tasks it contains.",
+  description:
+    "Reads one warehouse order with its status, timing, resource and the warehouse tasks it contains.",
   consultantEquivalent: "/SCWM/MON",
   input: z.object({ warehouse, warehouseOrder: documentNumber }),
   output: z.object({ found: z.boolean(), warehouseOrder: warehouseOrder.nullable() }),
@@ -363,7 +388,8 @@ export const getWarehouseOrder = defineTool({
 export const getHandlingUnit = defineTool({
   name: "get_handling_unit",
   title: "Handling unit",
-  description: "Reads one handling unit: packaging material, status, current storage bin and contents.",
+  description:
+    "Reads one handling unit: packaging material, status, current storage bin and contents.",
   consultantEquivalent: "/SCWM/MON",
   input: z.object({ warehouse, handlingUnit: documentNumber }),
   output: z.object({ found: z.boolean(), handlingUnit: handlingUnit.nullable() }),
@@ -396,7 +422,8 @@ export const getStock = defineTool({
 export const getStorageBin = defineTool({
   name: "get_storage_bin",
   title: "Storage bin",
-  description: "Reads one storage bin: storage type, blocks for putaway and removal, capacity and last movement.",
+  description:
+    "Reads one storage bin: storage type, blocks for putaway and removal, capacity and last movement.",
   consultantEquivalent: "/SCWM/LS03",
   input: z.object({ warehouse, storageBin: z.string().trim().min(1).max(18) }),
   output: z.object({ found: z.boolean(), storageBin: storageBin.nullable() }),
@@ -428,9 +455,14 @@ export const getApplicationLog = defineTool({
   consultantEquivalent: "SLG1",
   input: z
     .object({
-      externalId: documentNumber.optional().describe("Usually the document number the log was written for"),
+      externalId: documentNumber
+        .optional()
+        .describe("Usually the document number the log was written for"),
       object: z.string().trim().max(20).optional(),
-      severity: z.enum(["error", "warning", "info", "success"]).optional().describe("Minimum severity to return"),
+      severity: z
+        .enum(["error", "warning", "info", "success"])
+        .optional()
+        .describe("Minimum severity to return"),
       from: z.string().trim().optional().describe("ISO date-time, start of the window"),
       to: z.string().trim().optional().describe("ISO date-time, end of the window"),
       limit,
@@ -504,8 +536,12 @@ export const TOOLS = [
 ] as const satisfies readonly ToolDefinition[];
 
 export type ToolName = (typeof TOOLS)[number]["name"];
-export type ToolInput<N extends ToolName> = z.output<Extract<(typeof TOOLS)[number], { name: N }>["input"]>;
-export type ToolOutput<N extends ToolName> = z.output<Extract<(typeof TOOLS)[number], { name: N }>["output"]>;
+export type ToolInput<N extends ToolName> = z.output<
+  Extract<(typeof TOOLS)[number], { name: N }>["input"]
+>;
+export type ToolOutput<N extends ToolName> = z.output<
+  Extract<(typeof TOOLS)[number], { name: N }>["output"]
+>;
 
 const BY_NAME = new Map<string, ToolDefinition>(TOOLS.map((t) => [t.name, t]));
 export const findTool = (name: string): ToolDefinition | undefined => BY_NAME.get(name);

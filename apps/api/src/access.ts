@@ -55,5 +55,6 @@ export async function requireProjectAccess(
 }
 
 export function requireOrgAdmin(user: AuthUser): void {
-  if (user.token || !user.isOrgAdmin) throw forbidden("Only an organisation administrator can do this.");
+  if (user.token || !user.isOrgAdmin)
+    throw forbidden("Only an organisation administrator can do this.");
 }

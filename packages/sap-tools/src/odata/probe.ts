@@ -46,12 +46,18 @@ export interface ConnectionCheck {
 /** Entity sets and their property names, read from an EDMX $metadata document. */
 export function parseMetadata(xml: string): Record<string, string[]> {
   const types = new Map<string, string[]>();
-  for (const match of xml.matchAll(/<EntityType\b[^>]*\bName="([^"]+)"[^>]*>([\s\S]*?)<\/EntityType>/g)) {
-    const properties = [...match[2]!.matchAll(/<Property\b[^>]*\bName="([^"]+)"/g)].map((p) => p[1]!);
+  for (const match of xml.matchAll(
+    /<EntityType\b[^>]*\bName="([^"]+)"[^>]*>([\s\S]*?)<\/EntityType>/g,
+  )) {
+    const properties = [...match[2]!.matchAll(/<Property\b[^>]*\bName="([^"]+)"/g)].map(
+      (p) => p[1]!,
+    );
     types.set(match[1]!, properties);
   }
   const sets: Record<string, string[]> = {};
-  for (const match of xml.matchAll(/<EntitySet\b[^>]*\bName="([^"]+)"[^>]*\bEntityType="([^"]+)"/g)) {
+  for (const match of xml.matchAll(
+    /<EntitySet\b[^>]*\bName="([^"]+)"[^>]*\bEntityType="([^"]+)"/g,
+  )) {
     const typeName = match[2]!.split(".").pop()!;
     sets[match[1]!] = types.get(typeName) ?? [];
   }
@@ -65,20 +71,30 @@ function describeFailure(err: unknown): Pick<ServiceCheck, "state" | "detail"> {
     return { state: "error", detail: err.message };
   }
   const aborted = (err as Error)?.name === "TimeoutError" || (err as Error)?.name === "AbortError";
-  return { state: "error", detail: aborted ? "SAP did not answer in time." : String((err as Error)?.message ?? err) };
+  return {
+    state: "error",
+    detail: aborted ? "SAP did not answer in time." : String((err as Error)?.message ?? err),
+  };
 }
 
 async function checkService(client: ODataClient, key: ServiceKey): Promise<ServiceCheck> {
   const service = SERVICES[key];
   const usage = SERVICE_USAGE[key];
-  const base = { id: service.id, title: service.title, path: service.path, version: service.version, usedByTools: usage.tools };
+  const base = {
+    id: service.id,
+    title: service.title,
+    path: service.path,
+    version: service.version,
+    usedByTools: usage.tools,
+  };
   const expected = Object.entries(usage.entitySets);
   try {
     const exposed = parseMetadata(await client.metadata(service, AbortSignal.timeout(15_000)));
     const entitySets = expected.map(([name, properties]) => ({
       name,
       present: name in exposed,
-      missingProperties: name in exposed ? properties.filter((p) => !exposed[name]!.includes(p)) : [],
+      missingProperties:
+        name in exposed ? properties.filter((p) => !exposed[name]!.includes(p)) : [],
     }));
     const changed = entitySets.some((e) => !e.present || e.missingProperties.length > 0);
 
@@ -90,7 +106,9 @@ async function checkService(client: ODataClient, key: ServiceKey): Promise<Servi
       const [row] = await client.read(service, firstSet, { top: 1 }, AbortSignal.timeout(15_000));
       if (row) {
         example = Object.fromEntries(
-          firstProperties.filter((p) => row[p] !== null && row[p] !== undefined && row[p] !== "").map((p) => [p, String(row[p])]),
+          firstProperties
+            .filter((p) => row[p] !== null && row[p] !== undefined && row[p] !== "")
+            .map((p) => [p, String(row[p])]),
         );
       } else {
         detail = "The service answered but holds no data.";
@@ -101,7 +119,9 @@ async function checkService(client: ODataClient, key: ServiceKey): Promise<Servi
     return {
       ...base,
       state: changed ? "changed" : "ok",
-      detail: changed ? "The system's description of this service differs from the definition the tools were built on." : detail,
+      detail: changed
+        ? "The system's description of this service differs from the definition the tools were built on."
+        : detail,
       entitySets,
       example,
     };
@@ -111,10 +131,23 @@ async function checkService(client: ODataClient, key: ServiceKey): Promise<Servi
 }
 
 async function checkCandidate(client: ODataClient, service: ODataService): Promise<ServiceCheck> {
-  const base = { id: service.id, title: service.title, path: service.path, version: service.version, usedByTools: [] as ToolName[] };
+  const base = {
+    id: service.id,
+    title: service.title,
+    path: service.path,
+    version: service.version,
+    usedByTools: [] as ToolName[],
+  };
   try {
     const exposes = parseMetadata(await client.metadata(service, AbortSignal.timeout(15_000)));
-    return { ...base, state: "ok", detail: "Exists. Not used by any tool yet.", entitySets: [], example: null, exposes };
+    return {
+      ...base,
+      state: "ok",
+      detail: "Exists. Not used by any tool yet.",
+      entitySets: [],
+      example: null,
+      exposes,
+    };
   } catch (err) {
     return { ...base, ...describeFailure(err), entitySets: [], example: null };
   }
@@ -137,14 +170,18 @@ export async function checkConnection(client: ODataClient): Promise<ConnectionCh
     if (structural) return { name: tool.name, available: false, reason: structural };
     if (working.has(tool.name)) return { name: tool.name, available: true, reason: null };
     const failing = used.find((s) => s.usedByTools.includes(tool.name));
-    return { name: tool.name, available: false, reason: failing?.detail ?? "The SAP service behind this tool did not pass the check." };
+    return {
+      name: tool.name,
+      available: false,
+      reason: failing?.detail ?? "The SAP service behind this tool did not pass the check.",
+    };
   });
 
   const reachable = used.some((s) => s.state === "ok" || s.state === "changed");
   const refused = used.length > 0 && used.every((s) => s.state === "refused");
   const okCount = used.filter((s) => s.state === "ok").length;
   const summary = refused
-    ? "SAP refused the API key. Check that the key is copied completely and is still valid."
+    ? "Every request was refused. Check that the API key is copied completely and is still valid. If it is, a proxy or firewall between this server and sandbox.api.sap.com may be blocking the requests."
     : !reachable
       ? "None of the SAP services answered. Check the address and your network connection."
       : `${okCount} of ${used.length} SAP services answered as expected. ${tools.filter((t) => t.available).length} of ${tools.length} tools can run over this connection.`;

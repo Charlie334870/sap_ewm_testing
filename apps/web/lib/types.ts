@@ -35,6 +35,8 @@ export interface Environment {
   maxAutoToolLevel: number;
   requiresChangeReference: boolean;
 }
+export type DataSource = "SIMULATED" | "SAP_SANDBOX" | "SAP";
+
 export interface SapSystem {
   id: string;
   name: string;
@@ -42,10 +44,98 @@ export interface SapSystem {
   client: string;
   deployment: "embedded" | "decentralized";
   adapter: SapAdapter;
+  source: DataSource;
+  baseUrl: string | null;
   isActive: boolean;
   environment: EnvironmentKind;
+  lastCheck: ConnectionCheck | null;
+  lastCheckedAt: string | null;
   createdAt: string;
 }
+
+export interface SapSystemDetail extends SapSystem {
+  tools: Array<{ name: string; available: boolean; reason: string | null }>;
+  scenarios: Array<{ id: string; useCase: number; title: string; ticketTitle: string }>;
+}
+
+export interface ServiceCheck {
+  id: string;
+  title: string;
+  path: string;
+  version: "v2" | "v4";
+  usedByTools: string[];
+  state: "ok" | "changed" | "not_found" | "refused" | "error";
+  detail: string | null;
+  entitySets: Array<{ name: string; present: boolean; missingProperties: string[] }>;
+  example: Record<string, string> | null;
+  exposes?: Record<string, string[]>;
+}
+
+export interface ConnectionCheck {
+  checkedAt: string;
+  reachable: boolean;
+  summary: string;
+  services: ServiceCheck[];
+  tools: Array<{ name: string; available: boolean; reason: string | null }>;
+}
+
+export interface JsonSchemaProperty {
+  type?: "string" | "integer" | "number" | "boolean" | "object";
+  enum?: string[];
+  description?: string;
+  default?: unknown;
+  maxLength?: number;
+}
+
+export interface ToolDescription {
+  name: string;
+  title: string;
+  description: string;
+  authLevel: number;
+  consultantEquivalent: string;
+  inputSchema: { properties?: Record<string, JsonSchemaProperty>; required?: string[] };
+}
+
+export interface ToolEnvelope {
+  toolCallId: string;
+  tool: string;
+  status: "ok" | "error" | "timeout" | "rejected";
+  source: DataSource;
+  system: { id: string; name: string; sid: string; client: string; environment: EnvironmentKind };
+  retrievedAt: string;
+  durationMs: number;
+  data?: unknown;
+  error?: { code: string; message: string };
+}
+
+export interface ToolCall {
+  id: string;
+  createdAt: string;
+  toolName: string;
+  status: ToolEnvelope["status"];
+  source: DataSource;
+  durationMs: number | null;
+  error: string | null;
+  input: Record<string, unknown>;
+  sapSystemId: string;
+  sapSystemSid: string;
+  calledByName: string | null;
+  viaToken: string | null;
+  ticketNumber: number | null;
+}
+
+export interface ApiToken {
+  id: string;
+  name: string;
+  tokenPrefix: string;
+  createdAt: string;
+  expiresAt: string;
+  lastUsedAt: string | null;
+  revokedAt: string | null;
+  userId: string;
+  userName: string;
+}
+
 export interface TicketListItem {
   id: string;
   number: number;

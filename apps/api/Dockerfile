@@ -12,6 +12,7 @@ COPY packages/shared/package.json packages/shared/
 COPY packages/database/package.json packages/database/
 COPY packages/auth/package.json packages/auth/
 COPY packages/audit/package.json packages/audit/
+COPY packages/sap-tools/package.json packages/sap-tools/
 RUN pnpm install --frozen-lockfile --prod --filter "@ewm/api..."
 
 COPY tsconfig.base.json ./

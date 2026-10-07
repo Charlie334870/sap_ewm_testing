@@ -20,12 +20,21 @@ const listColumns = {
 };
 
 /** A project admin sees every token of the project; everyone else only their own. */
-export function listApiTokens(db: Database, projectId: string, viewer: { id: string; seesAll: boolean }) {
+export function listApiTokens(
+  db: Database,
+  projectId: string,
+  viewer: { id: string; seesAll: boolean },
+) {
   return db
     .select(listColumns)
     .from(apiTokens)
     .innerJoin(users, eq(users.id, apiTokens.userId))
-    .where(and(eq(apiTokens.projectId, projectId), viewer.seesAll ? undefined : eq(apiTokens.userId, viewer.id)))
+    .where(
+      and(
+        eq(apiTokens.projectId, projectId),
+        viewer.seesAll ? undefined : eq(apiTokens.userId, viewer.id),
+      ),
+    )
     .orderBy(desc(apiTokens.createdAt));
 }
 
@@ -49,7 +58,12 @@ export async function createApiToken(
         tokenPrefix: token.slice(0, 14),
         expiresAt,
       })
-      .returning({ id: apiTokens.id, name: apiTokens.name, expiresAt: apiTokens.expiresAt, tokenPrefix: apiTokens.tokenPrefix });
+      .returning({
+        id: apiTokens.id,
+        name: apiTokens.name,
+        expiresAt: apiTokens.expiresAt,
+        tokenPrefix: apiTokens.tokenPrefix,
+      });
     await appendAudit(tx, {
       organizationId: actor.organizationId,
       projectId,
@@ -106,13 +120,20 @@ export async function resolveApiToken(db: Database, token: string): Promise<Auth
     .from(apiTokens)
     .innerJoin(users, eq(users.id, apiTokens.userId))
     .where(
-      and(eq(apiTokens.tokenHash, hashSessionToken(token)), isNull(apiTokens.revokedAt), gt(apiTokens.expiresAt, new Date())),
+      and(
+        eq(apiTokens.tokenHash, hashSessionToken(token)),
+        isNull(apiTokens.revokedAt),
+        gt(apiTokens.expiresAt, new Date()),
+      ),
     )
     .limit(1);
   if (!row || !row.user.isActive) return null;
   const lastUsed = row.token.lastUsedAt?.getTime() ?? 0;
   if (Date.now() - lastUsed > 60_000) {
-    await db.update(apiTokens).set({ lastUsedAt: new Date() }).where(eq(apiTokens.id, row.token.id));
+    await db
+      .update(apiTokens)
+      .set({ lastUsedAt: new Date() })
+      .where(eq(apiTokens.id, row.token.id));
   }
   return {
     id: row.user.id,

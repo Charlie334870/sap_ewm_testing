@@ -1,1826 +1,1761 @@
 {
- "API_HANDLING_UNIT": {
-  "package": "@sap/cloud-sdk-vdm-handling-unit-service",
-  "version": "2.1.0",
-  "entities": {
-   "HandlingUnit": {
-    "keys": [
-     "HandlingUnitExternalID",
-     "Warehouse"
-    ],
-    "fields": [
-     {
-      "name": "HandlingUnitExternalID",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "PackagingMaterial",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PackagingMaterialType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Plant",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageLocation",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ShippingPoint",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ParentHandlingUnitNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "GrossWeight",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "NetWeight",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitMaxWeight",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "WeightUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitTareWeight",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitTareWeightUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "GrossVolume",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitNetVolume",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "VolumeUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitTareVolume",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitTareVolumeUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitLength",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitWidth",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitHeight",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "UnitOfMeasureDimension",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitPackingObjectKey",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitReferenceDocument",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CreatedByUser",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CreationDateTime",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "LastChangedByUser",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "LastChangeDateTime",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitProcessStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageSection",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageBin",
-      "type": "Edm.String",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_HandlingUnitItem"
-    ]
-   },
-   "HandlingUnitItem": {
-    "keys": [
-     "HandlingUnitExternalID",
-     "Warehouse",
-     "StockItemUUID"
-    ],
-    "fields": [
-     {
-      "name": "HandlingUnitExternalID",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "StockItemUUID",
-      "type": "Edm.Guid",
-      "nullable": false
-     },
-     {
-      "name": "HandlingUnitItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitReferenceDocument",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitRefDocumentItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitQuantity",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitQuantityUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitAltUnitOfMeasure",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Material",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ShelfLifeExpirationDate",
-      "type": "Edm.DateTime",
-      "nullable": true
-     },
-     {
-      "name": "HandlingUnitGoodsReceiptDate",
-      "type": "Edm.DateTime",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_HandlingUnit"
-    ]
-   }
+  "API_HANDLING_UNIT": {
+    "package": "@sap/cloud-sdk-vdm-handling-unit-service",
+    "version": "2.1.0",
+    "entities": {
+      "HandlingUnit": {
+        "keys": ["HandlingUnitExternalID", "Warehouse"],
+        "fields": [
+          {
+            "name": "HandlingUnitExternalID",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "PackagingMaterial",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PackagingMaterialType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Plant",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageLocation",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ShippingPoint",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ParentHandlingUnitNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "GrossWeight",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "NetWeight",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitMaxWeight",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "WeightUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitTareWeight",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitTareWeightUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "GrossVolume",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitNetVolume",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "VolumeUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitTareVolume",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitTareVolumeUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitLength",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitWidth",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitHeight",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "UnitOfMeasureDimension",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitPackingObjectKey",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitReferenceDocument",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CreatedByUser",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CreationDateTime",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "LastChangedByUser",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "LastChangeDateTime",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitProcessStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageSection",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageBin",
+            "type": "Edm.String",
+            "nullable": true
+          }
+        ],
+        "navigation": ["to_HandlingUnitItem"]
+      },
+      "HandlingUnitItem": {
+        "keys": ["HandlingUnitExternalID", "Warehouse", "StockItemUUID"],
+        "fields": [
+          {
+            "name": "HandlingUnitExternalID",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "StockItemUUID",
+            "type": "Edm.Guid",
+            "nullable": false
+          },
+          {
+            "name": "HandlingUnitItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitReferenceDocument",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitRefDocumentItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitQuantity",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitQuantityUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitAltUnitOfMeasure",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Material",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ShelfLifeExpirationDate",
+            "type": "Edm.DateTime",
+            "nullable": true
+          },
+          {
+            "name": "HandlingUnitGoodsReceiptDate",
+            "type": "Edm.DateTime",
+            "nullable": true
+          }
+        ],
+        "navigation": ["to_HandlingUnit"]
+      }
+    },
+    "servicePath": "/sap/opu/odata/sap/API_HANDLING_UNIT",
+    "odataVersion": "v2"
   },
-  "servicePath": "/sap/opu/odata/sap/API_HANDLING_UNIT",
-  "odataVersion": "v2"
- },
- "api_whse_availablestock": {
-  "package": "@sap/cloud-sdk-vdm-warehouse-available-stock-service",
-  "version": "2.1.0",
-  "entities": {
-   "WarehouseAvailableStock": {
-    "keys": [
-     "EWMWarehouse",
-     "Product",
-     "Batch",
-     "EWMStockOwner",
-     "EntitledToDisposeParty",
-     "EWMStockType",
-     "EWMStockUsage",
-     "StockDocumentCategory",
-     "EWMDocumentCategory",
-     "WBSElementExternalID",
-     "SpecialStockIdfgSalesOrder",
-     "SpecialStockIdfgSalesOrderItem",
-     "HandlingUnitExternalID",
-     "EWMStorageBin",
-     "EWMResource"
-    ],
-    "fields": [
-     {
-      "name": "EWMWarehouse",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "Product",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "Batch",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMStockOwner",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EntitledToDisposeParty",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMStockType",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMStockUsage",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "StockDocumentCategory",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMDocumentCategory",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WBSElementExternalID",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "SpecialStockIdfgSalesOrder",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "SpecialStockIdfgSalesOrderItem",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "HandlingUnitExternalID",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMStorageBin",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMResource",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WBSElementInternalID",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMStorageType",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "AvailableEWMStockQty",
-      "type": "Edm.Decimal",
-      "nullable": false
-     },
-     {
-      "name": "EWMStockQuantityBaseUnit",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "StockKeepingAlternativeUoM",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "GoodsReceiptUTCDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "ShelfLifeExpirationDate",
-      "type": "Edm.Date",
-      "nullable": true
-     },
-     {
-      "name": "EWMStockIsBlockedForInventory",
-      "type": "Edm.Boolean",
-      "nullable": false
-     },
-     {
-      "name": "EWMBatchIsInRestrictedUseStock",
-      "type": "Edm.Boolean",
-      "nullable": false
-     }
-    ],
-    "navigation": []
-   }
+  "api_whse_availablestock": {
+    "package": "@sap/cloud-sdk-vdm-warehouse-available-stock-service",
+    "version": "2.1.0",
+    "entities": {
+      "WarehouseAvailableStock": {
+        "keys": [
+          "EWMWarehouse",
+          "Product",
+          "Batch",
+          "EWMStockOwner",
+          "EntitledToDisposeParty",
+          "EWMStockType",
+          "EWMStockUsage",
+          "StockDocumentCategory",
+          "EWMDocumentCategory",
+          "WBSElementExternalID",
+          "SpecialStockIdfgSalesOrder",
+          "SpecialStockIdfgSalesOrderItem",
+          "HandlingUnitExternalID",
+          "EWMStorageBin",
+          "EWMResource"
+        ],
+        "fields": [
+          {
+            "name": "EWMWarehouse",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "Product",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "Batch",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMStockOwner",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EntitledToDisposeParty",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMStockType",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMStockUsage",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "StockDocumentCategory",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMDocumentCategory",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WBSElementExternalID",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "SpecialStockIdfgSalesOrder",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "SpecialStockIdfgSalesOrderItem",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "HandlingUnitExternalID",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMStorageBin",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMResource",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WBSElementInternalID",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMStorageType",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "AvailableEWMStockQty",
+            "type": "Edm.Decimal",
+            "nullable": false
+          },
+          {
+            "name": "EWMStockQuantityBaseUnit",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "StockKeepingAlternativeUoM",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "GoodsReceiptUTCDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "ShelfLifeExpirationDate",
+            "type": "Edm.Date",
+            "nullable": true
+          },
+          {
+            "name": "EWMStockIsBlockedForInventory",
+            "type": "Edm.Boolean",
+            "nullable": false
+          },
+          {
+            "name": "EWMBatchIsInRestrictedUseStock",
+            "type": "Edm.Boolean",
+            "nullable": false
+          }
+        ],
+        "navigation": []
+      }
+    },
+    "servicePath": "/sap/opu/odata4/sap/api_whse_availablestock/srvd_a2x/sap/warehouseavailablestock/0001",
+    "odataVersion": "v4"
   },
-  "servicePath": "/sap/opu/odata4/sap/api_whse_availablestock/srvd_a2x/sap/warehouseavailablestock/0001",
-  "odataVersion": "v4"
- },
- "API_WHSE_INBOUND_DELIVERY": {
-  "package": "@sap/cloud-sdk-vdm-warehouse-inbound-delivery-service",
-  "version": "2.1.0",
-  "entities": {
-   "WhseInbDelivItemSerialNumber": {
-    "keys": [
-     "InboundDelivery",
-     "InboundDeliveryItem",
-     "EWMSerialNumber"
-    ],
-    "fields": [
-     {
-      "name": "InboundDelivery",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "InboundDeliveryItem",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMSerialNumber",
-      "type": "Edm.String",
-      "nullable": false
-     }
-    ],
-    "navigation": [
-     "to_WhseInboundDeliveryItem"
-    ]
-   },
-   "WhseInboundDeliveryHead": {
-    "keys": [
-     "InboundDelivery"
-    ],
-    "fields": [
-     {
-      "name": "InboundDelivery",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ShipFromParty",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ShipFromPartyName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Carrier",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CarrierName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "AdvancedShippingNotification",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PlannedDeliveryUTCDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "ReceivingOffice",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "LastChangeDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_WhseInboundDeliveryItem"
-    ]
-   },
-   "WhseInboundDeliveryItem": {
-    "keys": [
-     "InboundDelivery",
-     "InboundDeliveryItem"
-    ],
-    "fields": [
-     {
-      "name": "InboundDelivery",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "InboundDeliveryItem",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryItemCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "InboundDeliveryItemType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Product",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductExternalID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductBatch",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CountryOfOrigin",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductQuantity",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "QuantityUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StagingAreaGroup",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StagingArea",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StagingBay",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "GoodsReceiptStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PlanningPutawayStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PutawayStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CompletionStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseProcessType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "GoodsMovementBin",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductionSupplyArea",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "LastChangeDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "EntitledToDisposeParty",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockUsage",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseStockCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockOwner",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryItemStockTypeDetnCode",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockDocumentCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockDocumentNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockItemNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WBSElementInternalID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WBSElementExternalID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SpecialStockIdfgSalesOrder",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SpecialStockIdfgSalesOrderItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PurchasingDocument",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PurchasingDocumentItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ManufacturingOrder",
-      "type": "Edm.String",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_WhseInbDeliveryItemSerialNo",
-     "to_WhseInboundDeliveryHead"
-    ]
-   }
+  "API_WHSE_INBOUND_DELIVERY": {
+    "package": "@sap/cloud-sdk-vdm-warehouse-inbound-delivery-service",
+    "version": "2.1.0",
+    "entities": {
+      "WhseInbDelivItemSerialNumber": {
+        "keys": ["InboundDelivery", "InboundDeliveryItem", "EWMSerialNumber"],
+        "fields": [
+          {
+            "name": "InboundDelivery",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "InboundDeliveryItem",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMSerialNumber",
+            "type": "Edm.String",
+            "nullable": false
+          }
+        ],
+        "navigation": ["to_WhseInboundDeliveryItem"]
+      },
+      "WhseInboundDeliveryHead": {
+        "keys": ["InboundDelivery"],
+        "fields": [
+          {
+            "name": "InboundDelivery",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ShipFromParty",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ShipFromPartyName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Carrier",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CarrierName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "AdvancedShippingNotification",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PlannedDeliveryUTCDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "ReceivingOffice",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "LastChangeDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          }
+        ],
+        "navigation": ["to_WhseInboundDeliveryItem"]
+      },
+      "WhseInboundDeliveryItem": {
+        "keys": ["InboundDelivery", "InboundDeliveryItem"],
+        "fields": [
+          {
+            "name": "InboundDelivery",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "InboundDeliveryItem",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryItemCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "InboundDeliveryItemType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Product",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductExternalID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductBatch",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CountryOfOrigin",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductQuantity",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "QuantityUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StagingAreaGroup",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StagingArea",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StagingBay",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "GoodsReceiptStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PlanningPutawayStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PutawayStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CompletionStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseProcessType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "GoodsMovementBin",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductionSupplyArea",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "LastChangeDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "EntitledToDisposeParty",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockUsage",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseStockCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockOwner",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryItemStockTypeDetnCode",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockDocumentCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockDocumentNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockItemNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WBSElementInternalID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WBSElementExternalID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SpecialStockIdfgSalesOrder",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SpecialStockIdfgSalesOrderItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PurchasingDocument",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PurchasingDocumentItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ManufacturingOrder",
+            "type": "Edm.String",
+            "nullable": true
+          }
+        ],
+        "navigation": ["to_WhseInbDeliveryItemSerialNo", "to_WhseInboundDeliveryHead"]
+      }
+    },
+    "servicePath": "/sap/opu/odata/sap/API_WHSE_INBOUND_DELIVERY",
+    "odataVersion": "v2"
   },
-  "servicePath": "/sap/opu/odata/sap/API_WHSE_INBOUND_DELIVERY",
-  "odataVersion": "v2"
- },
- "API_WHSE_OUTB_DLV_ORDER": {
-  "package": "@sap/cloud-sdk-vdm-warehouse-outbound-delivery-order-service",
-  "version": "2.1.0",
-  "entities": {
-   "WhseDeliveryDocumentAddress": {
-    "keys": [
-     "OutboundDeliveryOrder",
-     "OutboundDeliveryOrderItem",
-     "BusinessPartnerRole"
-    ],
-    "fields": [
-     {
-      "name": "OutboundDeliveryOrder",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "OutboundDeliveryOrderItem",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "BusinessPartnerRole",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "BusinessPartnerName1",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "BusinessPartnerName2",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StreetPrefixName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "AdditionalStreetPrefixName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StreetName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StreetSuffixName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "AdditionalStreetSuffixName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "HouseNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PostalCode",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CityName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Region",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Country",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PhoneNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "EmailAddress",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "IsBusinessPurposeCompleted",
-      "type": "Edm.String",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_WhseOutboundDeliveryOrderHead",
-     "to_WhseOutboundDeliveryOrderItem"
-    ]
-   },
-   "WhseOutbDelivOrderItemSerialNo": {
-    "keys": [
-     "OutboundDeliveryOrder",
-     "OutboundDeliveryOrderItem",
-     "EWMSerialNumber"
-    ],
-    "fields": [
-     {
-      "name": "OutboundDeliveryOrder",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "OutboundDeliveryOrderItem",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "EWMSerialNumber",
-      "type": "Edm.String",
-      "nullable": false
-     }
-    ],
-    "navigation": [
-     "to_WhseOutboundDeliveryOrderItem"
-    ]
-   },
-   "WhseOutboundDeliveryOrderHead": {
-    "keys": [
-     "OutboundDeliveryOrder"
-    ],
-    "fields": [
-     {
-      "name": "OutboundDeliveryOrder",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ShipToParty",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ShipToPartyName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Carrier",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CarrierName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PlannedDeliveryUTCDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "PlannedOutOfYardUTCDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "IncotermsPart1",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "IncotermsPart2",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Route",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SalesOrganization",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ShippingOffice",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "LastChangeDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_ShipToPartyDocumentAddress",
-     "to_WhseOutboundDeliveryOrderItem"
-    ]
-   },
-   "WhseOutboundDeliveryOrderItem": {
-    "keys": [
-     "OutboundDeliveryOrder",
-     "OutboundDeliveryOrderItem"
-    ],
-    "fields": [
-     {
-      "name": "OutboundDeliveryOrder",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "OutboundDeliveryOrderItem",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "OutbDeliveryOrderItemCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "OutboundDeliveryOrderItemType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Product",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductExternalID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductBatch",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductQuantity",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "QuantityUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StagingArea",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StagingAreaGroup",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StagingBay",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "GoodsIssueStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PlannedPickingStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PickingStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CompletionStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseProcessType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ShippingCondition",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "GoodsMovementBin",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductionSupplyArea",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "LastChangeDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "StorageType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageSection",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PlndGoodsIssueStartUTCDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "ActlGoodsIssueStartUTCDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "RouteSchedule",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "EntitledToDisposeParty",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockUsage",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseStockCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockOwner",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryItemStockTypeDetnCode",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockDocumentCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockDocumentNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockItemNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CountryOfOrigin",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WBSElementInternalID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WBSElementExternalID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SpecialStockIdfgSalesOrder",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SpecialStockIdfgSalesOrderItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SalesOrder",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SalesOrderItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ManufacturingOrder",
-      "type": "Edm.String",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_SoldToPartyDocumentAddress",
-     "to_WhseOutbDelivOrdItemSerialNo",
-     "to_WhseOutboundDeliveryOrderHead"
-    ]
-   }
+  "API_WHSE_OUTB_DLV_ORDER": {
+    "package": "@sap/cloud-sdk-vdm-warehouse-outbound-delivery-order-service",
+    "version": "2.1.0",
+    "entities": {
+      "WhseDeliveryDocumentAddress": {
+        "keys": ["OutboundDeliveryOrder", "OutboundDeliveryOrderItem", "BusinessPartnerRole"],
+        "fields": [
+          {
+            "name": "OutboundDeliveryOrder",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "OutboundDeliveryOrderItem",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "BusinessPartnerRole",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "BusinessPartnerName1",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "BusinessPartnerName2",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StreetPrefixName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "AdditionalStreetPrefixName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StreetName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StreetSuffixName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "AdditionalStreetSuffixName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "HouseNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PostalCode",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CityName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Region",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Country",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PhoneNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "EmailAddress",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "IsBusinessPurposeCompleted",
+            "type": "Edm.String",
+            "nullable": true
+          }
+        ],
+        "navigation": ["to_WhseOutboundDeliveryOrderHead", "to_WhseOutboundDeliveryOrderItem"]
+      },
+      "WhseOutbDelivOrderItemSerialNo": {
+        "keys": ["OutboundDeliveryOrder", "OutboundDeliveryOrderItem", "EWMSerialNumber"],
+        "fields": [
+          {
+            "name": "OutboundDeliveryOrder",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "OutboundDeliveryOrderItem",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "EWMSerialNumber",
+            "type": "Edm.String",
+            "nullable": false
+          }
+        ],
+        "navigation": ["to_WhseOutboundDeliveryOrderItem"]
+      },
+      "WhseOutboundDeliveryOrderHead": {
+        "keys": ["OutboundDeliveryOrder"],
+        "fields": [
+          {
+            "name": "OutboundDeliveryOrder",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ShipToParty",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ShipToPartyName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Carrier",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CarrierName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PlannedDeliveryUTCDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "PlannedOutOfYardUTCDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "IncotermsPart1",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "IncotermsPart2",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Route",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SalesOrganization",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ShippingOffice",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "LastChangeDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          }
+        ],
+        "navigation": ["to_ShipToPartyDocumentAddress", "to_WhseOutboundDeliveryOrderItem"]
+      },
+      "WhseOutboundDeliveryOrderItem": {
+        "keys": ["OutboundDeliveryOrder", "OutboundDeliveryOrderItem"],
+        "fields": [
+          {
+            "name": "OutboundDeliveryOrder",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "OutboundDeliveryOrderItem",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "OutbDeliveryOrderItemCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "OutboundDeliveryOrderItemType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Product",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductExternalID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductBatch",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductQuantity",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "QuantityUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StagingArea",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StagingAreaGroup",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StagingBay",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "GoodsIssueStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PlannedPickingStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PickingStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CompletionStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseProcessType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ShippingCondition",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "GoodsMovementBin",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductionSupplyArea",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "LastChangeDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "StorageType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageSection",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PlndGoodsIssueStartUTCDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "ActlGoodsIssueStartUTCDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "RouteSchedule",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "EntitledToDisposeParty",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockUsage",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseStockCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockOwner",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryItemStockTypeDetnCode",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockDocumentCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockDocumentNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockItemNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CountryOfOrigin",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WBSElementInternalID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WBSElementExternalID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SpecialStockIdfgSalesOrder",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SpecialStockIdfgSalesOrderItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SalesOrder",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SalesOrderItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ManufacturingOrder",
+            "type": "Edm.String",
+            "nullable": true
+          }
+        ],
+        "navigation": [
+          "to_SoldToPartyDocumentAddress",
+          "to_WhseOutbDelivOrdItemSerialNo",
+          "to_WhseOutboundDeliveryOrderHead"
+        ]
+      }
+    },
+    "servicePath": "/sap/opu/odata/sap/API_WHSE_OUTB_DLV_ORDER",
+    "odataVersion": "v2"
   },
-  "servicePath": "/sap/opu/odata/sap/API_WHSE_OUTB_DLV_ORDER",
-  "odataVersion": "v2"
- },
- "API_WAREHOUSE_STORAGE_BIN": {
-  "package": "@sap/cloud-sdk-vdm-warehouse-storage-bin-service",
-  "version": "2.1.0",
-  "entities": {
-   "WarehouseStorageBin": {
-    "keys": [
-     "Warehouse",
-     "StorageBin"
-    ],
-    "fields": [
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "StorageBin",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "StorageType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinIsEmpty",
-      "type": "Edm.Boolean",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinIsFull",
-      "type": "Edm.Boolean",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinVerifiedByMobileID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinIsBlockedForRemoval",
-      "type": "Edm.Boolean",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinIsBlockedForPutaway",
-      "type": "Edm.Boolean",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinIsBlockedDueToPInv",
-      "type": "Edm.Boolean",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinFreeDefinedAisleText",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinFreeDefinedStackText",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinFreeDefinedLevelText",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WeightUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "LoadCapacityOfStorageBin",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "WeightOfMaterialsInStorageBin",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "VolumeUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinMaxVolume",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinOccupiedVolume",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinRowPositionInWhse",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinStackPositionInWhse",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "StorageBinLevelPositionInWhse",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "EWMPhysicalInventoryType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PhysicalInventoryDocNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PhysicalInventoryItemNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PInvCountedUTCDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorageBinLastChangedByUser",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorageBinLastChgDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorageBinLastWarehouseTask",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorageBinFirstPutawayDate",
-      "type": "Edm.DateTime",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorageBinLastMvtDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorageBinLastClrgDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorageBinFixedBinType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorageBinAngleValue",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorBinNumberOfHndlgUnits",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "EWMStorBinMaxNmbrOfHndlgUnits",
-      "type": "Edm.String",
-      "nullable": true
-     }
-    ],
-    "navigation": []
-   }
+  "API_WAREHOUSE_STORAGE_BIN": {
+    "package": "@sap/cloud-sdk-vdm-warehouse-storage-bin-service",
+    "version": "2.1.0",
+    "entities": {
+      "WarehouseStorageBin": {
+        "keys": ["Warehouse", "StorageBin"],
+        "fields": [
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "StorageBin",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "StorageType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinIsEmpty",
+            "type": "Edm.Boolean",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinIsFull",
+            "type": "Edm.Boolean",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinVerifiedByMobileID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinIsBlockedForRemoval",
+            "type": "Edm.Boolean",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinIsBlockedForPutaway",
+            "type": "Edm.Boolean",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinIsBlockedDueToPInv",
+            "type": "Edm.Boolean",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinFreeDefinedAisleText",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinFreeDefinedStackText",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinFreeDefinedLevelText",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WeightUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "LoadCapacityOfStorageBin",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "WeightOfMaterialsInStorageBin",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "VolumeUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinMaxVolume",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinOccupiedVolume",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinRowPositionInWhse",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinStackPositionInWhse",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "StorageBinLevelPositionInWhse",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "EWMPhysicalInventoryType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PhysicalInventoryDocNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PhysicalInventoryItemNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PInvCountedUTCDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorageBinLastChangedByUser",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorageBinLastChgDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorageBinLastWarehouseTask",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorageBinFirstPutawayDate",
+            "type": "Edm.DateTime",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorageBinLastMvtDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorageBinLastClrgDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorageBinFixedBinType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorageBinAngleValue",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorBinNumberOfHndlgUnits",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "EWMStorBinMaxNmbrOfHndlgUnits",
+            "type": "Edm.String",
+            "nullable": true
+          }
+        ],
+        "navigation": []
+      }
+    },
+    "servicePath": "/sap/opu/odata/sap/API_WAREHOUSE_STORAGE_BIN",
+    "odataVersion": "v2"
   },
-  "servicePath": "/sap/opu/odata/sap/API_WAREHOUSE_STORAGE_BIN",
-  "odataVersion": "v2"
- },
- "API_WAREHOUSE_ORDER_TASK": {
-  "package": "@sap/cloud-sdk-vdm-warehouse-task-service",
-  "version": "2.1.0",
-  "entities": {
-   "WarehouseOrder": {
-    "keys": [
-     "Warehouse",
-     "WarehouseOrder"
-    ],
-    "fields": [
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WarehouseOrder",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WarehouseOrderStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseOrderStatusName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CreationDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseOrderStartDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "WhseOrderConfirmedDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "LastChangeDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "WhseOrderLatestStartDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "ExecutingResource",
-      "type": "Edm.String",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_WarehouseTask"
-    ]
-   },
-   "WarehouseTask": {
-    "keys": [
-     "Warehouse",
-     "WarehouseTask",
-     "WarehouseTaskItem"
-    ],
-    "fields": [
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WarehouseTask",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WarehouseTaskItem",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WarehouseOrder",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "CreationDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "LastChangeDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "ConfirmationUTCDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "WhseTaskPlannedClosingDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "WhseTaskGoodsReceiptDateTime",
-      "type": "Edm.DateTimeOffset",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseTaskStatus",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseTaskStatusName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseProcessType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseProcessTypeName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "IsHandlingUnitWarehouseTask",
-      "type": "Edm.Boolean",
-      "nullable": true
-     },
-     {
-      "name": "ProductName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductDescription",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Batch",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "BatchChangeIsNotAllowed",
-      "type": "Edm.Boolean",
-      "nullable": true
-     },
-     {
-      "name": "StockType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockTypeName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockOwner",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "EntitledToDisposeParty",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockDocumentCategory",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockDocumentNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "StockItemNumber",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WBSElementInternalID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WBSElementExternalID",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SpecialStockIdfgSalesOrder",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SpecialStockIdfgSalesOrderItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ExecutingResource",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductionOrder",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ProductionSupplyArea",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "Delivery",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DeliveryItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PurchasingDocument",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "PurchasingDocumentItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SalesDocument",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SalesDocumentItem",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "BaseUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "EWMBaseUnitISOCode",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "AlternativeUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "EWMAlternativeUnitISOCode",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "TargetQuantityInBaseUnit",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "TargetQuantityInAltvUnit",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "ActualQuantityInBaseUnit",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "ActualQuantityInAltvUnit",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "DifferenceQuantityInBaseUnit",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "DifferenceQuantityInAltvUnit",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "WhseTaskNetWeightUnitOfMeasure",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "NetWeight",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "WhseTaskNetVolumeUnitOfMeasure",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WhseTaskNetVolume",
-      "type": "Edm.Decimal",
-      "nullable": true
-     },
-     {
-      "name": "SourceStorageType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SourceStorageTypeName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SourceStorageSection",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SourceStorageBin",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DestinationStorageType",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DestinationStorageTypeName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DestinationStorageSection",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DestinationStorageBin",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DestinationResource",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ActivityArea",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "ActivityAreaName",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "SourceHandlingUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "DestinationHandlingUnit",
-      "type": "Edm.String",
-      "nullable": true
-     },
-     {
-      "name": "WarehouseTaskExceptionCode",
-      "type": "Edm.String",
-      "nullable": true
-     }
-    ],
-    "navigation": [
-     "to_WarehouseOrder",
-     "to_WarehouseTaskExceptionCode"
-    ]
-   },
-   "WarehouseTaskExceptionCode": {
-    "keys": [
-     "Warehouse",
-     "WarehouseTask",
-     "WarehouseTaskItem",
-     "WarehouseTaskExceptionCode",
-     "BusinessContext",
-     "BusinessContextExecutionStep"
-    ],
-    "fields": [
-     {
-      "name": "Warehouse",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WarehouseTask",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WarehouseTaskItem",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "WarehouseTaskExceptionCode",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "BusinessContext",
-      "type": "Edm.String",
-      "nullable": false
-     },
-     {
-      "name": "BusinessContextExecutionStep",
-      "type": "Edm.String",
-      "nullable": false
-     }
-    ],
-    "navigation": [
-     "to_WarehouseTask"
-    ]
-   }
-  },
-  "servicePath": "/sap/opu/odata/sap/API_WAREHOUSE_ORDER_TASK",
-  "odataVersion": "v2"
- }
+  "API_WAREHOUSE_ORDER_TASK": {
+    "package": "@sap/cloud-sdk-vdm-warehouse-task-service",
+    "version": "2.1.0",
+    "entities": {
+      "WarehouseOrder": {
+        "keys": ["Warehouse", "WarehouseOrder"],
+        "fields": [
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WarehouseOrder",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WarehouseOrderStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseOrderStatusName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CreationDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseOrderStartDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "WhseOrderConfirmedDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "LastChangeDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "WhseOrderLatestStartDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "ExecutingResource",
+            "type": "Edm.String",
+            "nullable": true
+          }
+        ],
+        "navigation": ["to_WarehouseTask"]
+      },
+      "WarehouseTask": {
+        "keys": ["Warehouse", "WarehouseTask", "WarehouseTaskItem"],
+        "fields": [
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WarehouseTask",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WarehouseTaskItem",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WarehouseOrder",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "CreationDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "LastChangeDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "ConfirmationUTCDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "WhseTaskPlannedClosingDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "WhseTaskGoodsReceiptDateTime",
+            "type": "Edm.DateTimeOffset",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseTaskStatus",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseTaskStatusName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseProcessType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseProcessTypeName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "IsHandlingUnitWarehouseTask",
+            "type": "Edm.Boolean",
+            "nullable": true
+          },
+          {
+            "name": "ProductName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductDescription",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Batch",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "BatchChangeIsNotAllowed",
+            "type": "Edm.Boolean",
+            "nullable": true
+          },
+          {
+            "name": "StockType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockTypeName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockOwner",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "EntitledToDisposeParty",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockDocumentCategory",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockDocumentNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "StockItemNumber",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WBSElementInternalID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WBSElementExternalID",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SpecialStockIdfgSalesOrder",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SpecialStockIdfgSalesOrderItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ExecutingResource",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductionOrder",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ProductionSupplyArea",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "Delivery",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DeliveryItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PurchasingDocument",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "PurchasingDocumentItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SalesDocument",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SalesDocumentItem",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "BaseUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "EWMBaseUnitISOCode",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "AlternativeUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "EWMAlternativeUnitISOCode",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "TargetQuantityInBaseUnit",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "TargetQuantityInAltvUnit",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "ActualQuantityInBaseUnit",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "ActualQuantityInAltvUnit",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "DifferenceQuantityInBaseUnit",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "DifferenceQuantityInAltvUnit",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "WhseTaskNetWeightUnitOfMeasure",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "NetWeight",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "WhseTaskNetVolumeUnitOfMeasure",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WhseTaskNetVolume",
+            "type": "Edm.Decimal",
+            "nullable": true
+          },
+          {
+            "name": "SourceStorageType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SourceStorageTypeName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SourceStorageSection",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SourceStorageBin",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DestinationStorageType",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DestinationStorageTypeName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DestinationStorageSection",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DestinationStorageBin",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DestinationResource",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ActivityArea",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "ActivityAreaName",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "SourceHandlingUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "DestinationHandlingUnit",
+            "type": "Edm.String",
+            "nullable": true
+          },
+          {
+            "name": "WarehouseTaskExceptionCode",
+            "type": "Edm.String",
+            "nullable": true
+          }
+        ],
+        "navigation": ["to_WarehouseOrder", "to_WarehouseTaskExceptionCode"]
+      },
+      "WarehouseTaskExceptionCode": {
+        "keys": [
+          "Warehouse",
+          "WarehouseTask",
+          "WarehouseTaskItem",
+          "WarehouseTaskExceptionCode",
+          "BusinessContext",
+          "BusinessContextExecutionStep"
+        ],
+        "fields": [
+          {
+            "name": "Warehouse",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WarehouseTask",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WarehouseTaskItem",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "WarehouseTaskExceptionCode",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "BusinessContext",
+            "type": "Edm.String",
+            "nullable": false
+          },
+          {
+            "name": "BusinessContextExecutionStep",
+            "type": "Edm.String",
+            "nullable": false
+          }
+        ],
+        "navigation": ["to_WarehouseTask"]
+      }
+    },
+    "servicePath": "/sap/opu/odata/sap/API_WAREHOUSE_ORDER_TASK",
+    "odataVersion": "v2"
+  }
 }

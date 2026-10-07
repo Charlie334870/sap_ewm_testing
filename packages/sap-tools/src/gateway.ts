@@ -3,7 +3,12 @@ import { schema, type Database } from "@ewm/database";
 import type { DataSource, EnvironmentKind, SapAdapter as SapAdapterKind } from "@ewm/shared";
 import { AdapterError, type SapAdapter } from "./adapter";
 import { findTool } from "./contracts";
-import { assertSandboxUrl, SapApiSandboxAdapter, sandboxHeaders, SANDBOX_HOSTS } from "./odata/adapter";
+import {
+  assertSandboxUrl,
+  SapApiSandboxAdapter,
+  sandboxHeaders,
+  SANDBOX_HOSTS,
+} from "./odata/adapter";
 import type { SecretBox } from "./secrets";
 import { SimulatedSapAdapter } from "./simulated/adapter";
 
@@ -36,7 +41,14 @@ export interface ToolCallEnvelope {
   status: ToolCallStatus;
   /** Where the data came from. SIMULATED means no SAP system was involved. */
   source: DataSource;
-  system: { id: string; name: string; sid: string; client: string; environment: EnvironmentKind; adapter: SapAdapterKind };
+  system: {
+    id: string;
+    name: string;
+    sid: string;
+    client: string;
+    environment: EnvironmentKind;
+    adapter: SapAdapterKind;
+  };
   retrievedAt: string;
   durationMs: number;
   /** Present only when status is ok. */
@@ -57,7 +69,11 @@ export interface ResolvedSystem {
   environment: typeof environments.$inferSelect;
 }
 
-export async function loadSystem(db: Database, projectId: string, sapSystemId: string): Promise<ResolvedSystem> {
+export async function loadSystem(
+  db: Database,
+  projectId: string,
+  sapSystemId: string,
+): Promise<ResolvedSystem> {
   const [row] = await db
     .select({ system: sapSystems, environment: environments })
     .from(sapSystems)
@@ -73,29 +89,57 @@ export const sourceOf = (adapter: SapAdapterKind): DataSource =>
   adapter === "simulated" ? "SIMULATED" : adapter === "sap_api_sandbox" ? "SAP_SANDBOX" : "SAP";
 
 /** Builds the adapter for a system. Secrets are decrypted here and go no further than the adapter. */
-export async function createAdapter(deps: GatewayDeps, system: typeof sapSystems.$inferSelect): Promise<SapAdapter> {
+export async function createAdapter(
+  deps: GatewayDeps,
+  system: typeof sapSystems.$inferSelect,
+): Promise<SapAdapter> {
   if (system.adapter === "simulated") {
-    return new SimulatedSapAdapter({ id: system.id, sid: system.sid, client: system.client, baseUrl: null });
+    return new SimulatedSapAdapter({
+      id: system.id,
+      sid: system.sid,
+      client: system.client,
+      baseUrl: null,
+    });
   }
   if (system.adapter === "sap_api_sandbox") {
-    if (!deps.secrets) throw new AdapterError("authentication_failed", "SECRETS_KEY is not configured on the server.");
-    if (!system.baseUrl) throw new AdapterError("service_unavailable", "This system has no address.");
+    if (!deps.secrets)
+      throw new AdapterError(
+        "authentication_failed",
+        "SECRETS_KEY is not configured on the server.",
+      );
+    if (!system.baseUrl)
+      throw new AdapterError("service_unavailable", "This system has no address.");
     try {
       assertSandboxUrl(system.baseUrl, deps.sandboxHosts ?? SANDBOX_HOSTS);
     } catch (err) {
       throw new AdapterError("service_unavailable", (err as Error).message);
     }
-    const [credential] = await deps.db.select().from(sapCredentials).where(eq(sapCredentials.sapSystemId, system.id)).limit(1);
-    if (!credential) throw new AdapterError("authentication_failed", "No API key is stored for this system.");
+    const [credential] = await deps.db
+      .select()
+      .from(sapCredentials)
+      .where(eq(sapCredentials.sapSystemId, system.id))
+      .limit(1);
+    if (!credential)
+      throw new AdapterError("authentication_failed", "No API key is stored for this system.");
     let apiKey: string;
     try {
       apiKey = deps.secrets.decrypt(credential.secretEncrypted);
     } catch {
-      throw new AdapterError("authentication_failed", "The stored API key cannot be read. Was SECRETS_KEY changed? Enter the key again.");
+      throw new AdapterError(
+        "authentication_failed",
+        "The stored API key cannot be read. Was SECRETS_KEY changed? Enter the key again.",
+      );
     }
-    return new SapApiSandboxAdapter({ baseUrl: system.baseUrl, headers: sandboxHeaders(apiKey), fetchImpl: deps.fetchImpl });
+    return new SapApiSandboxAdapter({
+      baseUrl: system.baseUrl,
+      headers: sandboxHeaders(apiKey),
+      fetchImpl: deps.fetchImpl,
+    });
   }
-  throw new AdapterError("not_supported", "Connections to customer SAP systems arrive with Milestone 6.");
+  throw new AdapterError(
+    "not_supported",
+    "Connections to customer SAP systems arrive with Milestone 6.",
+  );
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -111,7 +155,10 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  *
  * A failure never produces substitute data: the envelope carries an error and no data.
  */
-export async function executeTool(deps: GatewayDeps, request: ToolCallRequest): Promise<ToolCallEnvelope> {
+export async function executeTool(
+  deps: GatewayDeps,
+  request: ToolCallRequest,
+): Promise<ToolCallEnvelope> {
   const { db } = deps;
   const { system, environment } = await loadSystem(db, request.projectId, request.sapSystemId);
   const source = sourceOf(system.adapter);
@@ -120,7 +167,12 @@ export async function executeTool(deps: GatewayDeps, request: ToolCallRequest): 
 
   const finish = async (
     status: ToolCallStatus,
-    outcome: { data?: unknown; error?: { code: string; message: string }; input?: unknown; rawOutput?: unknown },
+    outcome: {
+      data?: unknown;
+      error?: { code: string; message: string };
+      input?: unknown;
+      rawOutput?: unknown;
+    },
   ): Promise<ToolCallEnvelope> => {
     const durationMs = Date.now() - started;
     const [row] = await db
@@ -135,9 +187,16 @@ export async function executeTool(deps: GatewayDeps, request: ToolCallRequest): 
         toolName: request.toolName.slice(0, 80),
         authLevel: tool?.authLevel ?? 0,
         input: (outcome.input ?? request.input ?? {}) as object,
-        output: status === "ok" ? (outcome.data as object) : outcome.rawOutput === undefined ? null : { discarded: outcome.rawOutput },
+        output:
+          status === "ok"
+            ? (outcome.data as object)
+            : outcome.rawOutput === undefined
+              ? null
+              : { discarded: outcome.rawOutput },
         status,
-        error: outcome.error ? `${outcome.error.code}: ${outcome.error.message}`.slice(0, 2000) : null,
+        error: outcome.error
+          ? `${outcome.error.code}: ${outcome.error.message}`.slice(0, 2000)
+          : null,
         source,
         durationMs,
       })
@@ -160,12 +219,16 @@ export async function executeTool(deps: GatewayDeps, request: ToolCallRequest): 
       ...(status === "ok" ? { data: outcome.data } : { error: outcome.error }),
     };
   };
-  const reject = (code: string, message: string) => finish("rejected", { error: { code, message } });
+  const reject = (code: string, message: string) =>
+    finish("rejected", { error: { code, message } });
 
   if (!tool) return reject("unknown_tool", `There is no tool called ${request.toolName}.`);
   if (!system.isActive) return reject("system_inactive", "This SAP system is deactivated.");
   if (tool.access !== "read" || tool.authLevel > environment.maxAutoToolLevel) {
-    return reject("approval_required", "This tool changes data or needs an approval, which this build cannot give.");
+    return reject(
+      "approval_required",
+      "This tool changes data or needs an approval, which this build cannot give.",
+    );
   }
   if (!tool.environments.includes(environment.kind)) {
     return reject("environment_not_allowed", `${tool.name} is not allowed in ${environment.kind}.`);
@@ -181,7 +244,9 @@ export async function executeTool(deps: GatewayDeps, request: ToolCallRequest): 
 
   const parsedInput = tool.input.safeParse(request.input ?? {});
   if (!parsedInput.success) {
-    const problems = parsedInput.error.issues.map((i) => `${i.path.join(".") || "input"}: ${i.message}`).join("; ");
+    const problems = parsedInput.error.issues
+      .map((i) => `${i.path.join(".") || "input"}: ${i.message}`)
+      .join("; ");
     return reject("invalid_input", problems);
   }
   const input = parsedInput.data;
@@ -190,11 +255,13 @@ export async function executeTool(deps: GatewayDeps, request: ToolCallRequest): 
   try {
     adapter = await createAdapter(deps, system);
   } catch (err) {
-    if (err instanceof AdapterError) return finish("error", { input, error: { code: err.code, message: err.message } });
+    if (err instanceof AdapterError)
+      return finish("error", { input, error: { code: err.code, message: err.message } });
     throw err;
   }
   const unsupported = adapter.unsupportedReason(tool.name);
-  if (unsupported) return finish("rejected", { input, error: { code: "not_supported", message: unsupported } });
+  if (unsupported)
+    return finish("rejected", { input, error: { code: "not_supported", message: unsupported } });
 
   for (let attempt = 0; ; attempt++) {
     const signal = AbortSignal.timeout(tool.timeoutMs);
@@ -214,11 +281,17 @@ export async function executeTool(deps: GatewayDeps, request: ToolCallRequest): 
       const output = tool.output.safeParse(raw);
       if (!output.success) {
         // Unexpected data: stop. The result is kept for diagnosis but not handed to the caller.
-        const where = output.error.issues.slice(0, 5).map((i) => i.path.join(".")).join(", ");
+        const where = output.error.issues
+          .slice(0, 5)
+          .map((i) => i.path.join("."))
+          .join(", ");
         return finish("error", {
           input,
           rawOutput: raw,
-          error: { code: "unexpected_data", message: `The system returned data that does not match the tool's contract (${where}).` },
+          error: {
+            code: "unexpected_data",
+            message: `The system returned data that does not match the tool's contract (${where}).`,
+          },
         });
       }
       return finish("ok", { input, data: output.data });
@@ -232,10 +305,14 @@ export async function executeTool(deps: GatewayDeps, request: ToolCallRequest): 
       if (timedOut) {
         return finish("timeout", {
           input,
-          error: { code: "timeout", message: `The system did not answer within ${tool.timeoutMs / 1000} seconds.` },
+          error: {
+            code: "timeout",
+            message: `The system did not answer within ${tool.timeoutMs / 1000} seconds.`,
+          },
         });
       }
-      if (err instanceof AdapterError) return finish("error", { input, error: { code: err.code, message: err.message } });
+      if (err instanceof AdapterError)
+        return finish("error", { input, error: { code: err.code, message: err.message } });
       throw err;
     }
   }

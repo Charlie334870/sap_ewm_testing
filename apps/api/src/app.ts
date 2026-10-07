@@ -51,9 +51,12 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     const bearer = /^Bearer (\S+)$/.exec(req.headers.authorization ?? "")?.[1];
     if (bearer?.startsWith(API_TOKEN_PREFIX)) {
       const user = await resolveApiToken(db, bearer);
-      if (!user) throw unauthorized("This access token is not valid. It may have expired or been revoked.");
+      if (!user)
+        throw unauthorized("This access token is not valid. It may have expired or been revoked.");
       if (!req.routeOptions.config?.tokenAllowed) {
-        throw forbidden("An agent access token can only read tickets and systems and run read-only tools.");
+        throw forbidden(
+          "An agent access token can only read tickets and systems and run read-only tools.",
+        );
       }
       req.user = user;
       return;

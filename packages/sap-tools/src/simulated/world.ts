@@ -107,7 +107,12 @@ export function deliveryItem(
     quantity,
     unit: "EA",
     warehouseProcessType: "2010",
-    statuses: { goodsMovement: S.notStarted, planning: S.notStarted, execution: S.notStarted, completion: S.notStarted },
+    statuses: {
+      goodsMovement: S.notStarted,
+      planning: S.notStarted,
+      execution: S.notStarted,
+      completion: S.notStarted,
+    },
     stagingArea: null,
     goodsMovementBin: null,
     reference: { salesOrder: null, purchasingDocument: null, manufacturingOrder: null },
@@ -142,7 +147,8 @@ export function task(
 export function stock(
   warehouse: string,
   product: string,
-  over: Partial<StockRow> & Pick<StockRow, "stockType" | "storageType" | "storageBin" | "physicalQuantity">,
+  over: Partial<StockRow> &
+    Pick<StockRow, "stockType" | "storageType" | "storageBin" | "physicalQuantity">,
 ): StockRow & { warehouse: string } {
   return {
     warehouse,
@@ -178,4 +184,8 @@ export const log = (
   ...over,
 });
 
-export const config = (area: ConfigurationArea, warehouse: string, entry: ConfigEntry) => ({ area, warehouse, entry });
+export const config = (area: ConfigurationArea, warehouse: string, entry: ConfigEntry) => ({
+  area,
+  warehouse,
+  entry,
+});

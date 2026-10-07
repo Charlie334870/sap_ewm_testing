@@ -17,7 +17,9 @@ export interface TestContext {
   close: () => Promise<void>;
 }
 
-export async function createTestContext(options: { sapFetch?: typeof fetch } = {}): Promise<TestContext> {
+export async function createTestContext(
+  options: { sapFetch?: typeof fetch } = {},
+): Promise<TestContext> {
   const database = createDatabase(testDatabaseUrl(), { max: 10 });
   const config: Config = {
     databaseUrl: testDatabaseUrl(),

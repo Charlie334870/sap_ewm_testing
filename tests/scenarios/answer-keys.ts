@@ -23,7 +23,11 @@ export interface AnswerKey {
   cause: string;
   rootCause: string;
   /** What category of fix is right, and at which authorisation level it sits. */
-  fix: { summary: string; level: 2 | 3; kind: "business_decision" | "customizing" | "period_or_master_data" };
+  fix: {
+    summary: string;
+    level: 2 | 3;
+    kind: "business_decision" | "customizing" | "period_or_master_data";
+  };
   evidence: EvidenceCheck[];
   /** Plausible wrong conclusions. An investigation that lands on one of these has failed. */
   wrongConclusions: string[];
@@ -49,7 +53,10 @@ export const ANSWER_KEYS: AnswerKey[] = [
         shows: "The delivery item exists, has process type 2010 and no task was planned.",
         tool: "get_delivery",
         input: { direction: "outbound", delivery: "80001001" },
-        expect: { "delivery.items.0.warehouseProcessType": "2010", "delivery.items.0.statuses.planning.text": "Not started" },
+        expect: {
+          "delivery.items.0.warehouseProcessType": "2010",
+          "delivery.items.0.statuses.planning.text": "Not started",
+        },
       },
       {
         shows: "No warehouse task exists for the delivery.",
@@ -70,10 +77,14 @@ export const ANSWER_KEYS: AnswerKey[] = [
         expect: { "entries.0.availableForPicking": false },
       },
       {
-        shows: "The stock went to quality inspection at goods receipt of inbound delivery 180000450.",
+        shows:
+          "The stock went to quality inspection at goods receipt of inbound delivery 180000450.",
         tool: "get_application_log",
         input: { externalId: "180000450" },
-        expect: { "messages.1.text": "Inspection document created for item 10, product P-1001, quantity 40 EA. Stock posted to quality inspection." },
+        expect: {
+          "messages.1.text":
+            "Inspection document created for item 10, product P-1001, quantity 40 EA. Stock posted to quality inspection.",
+        },
       },
     ],
     wrongConclusions: [
@@ -84,8 +95,10 @@ export const ANSWER_KEYS: AnswerKey[] = [
   },
   {
     packId: "queue-failure",
-    symptom: "Goods issue of outbound delivery order 80001002 is posted in EWM, but the ERP delivery shows it as open.",
-    cause: "The goods issue message to the ERP delivery is stuck in a qRFC queue with status SYSFAIL.",
+    symptom:
+      "Goods issue of outbound delivery order 80001002 is posted in EWM, but the ERP delivery shows it as open.",
+    cause:
+      "The goods issue message to the ERP delivery is stuck in a qRFC queue with status SYSFAIL.",
     rootCause:
       "The ERP posting failed because the posting period for October 2026 is not open in company code 1710: only 2026/09 " +
       "and 2026/08 allow postings. The warehouse side is complete and correct.",
@@ -107,7 +120,11 @@ export const ANSWER_KEYS: AnswerKey[] = [
         shows: "A queue for this delivery is in error.",
         tool: "get_queue_status",
         input: { document: "80001002" },
-        expect: { "queues.0.status": "SYSFAIL", "queues.0.errorText": "Posting only possible in periods 2026/09 and 2026/08 in company code 1710" },
+        expect: {
+          "queues.0.status": "SYSFAIL",
+          "queues.0.errorText":
+            "Posting only possible in periods 2026/09 and 2026/08 in company code 1710",
+        },
       },
       {
         shows: "It is the only failed queue, so this is not a general interface outage.",
@@ -124,7 +141,8 @@ export const ANSWER_KEYS: AnswerKey[] = [
   },
   {
     packId: "wpt-not-determined",
-    symptom: "Item 20 of outbound delivery order 80001003 gets no warehouse task; item 10 was picked normally.",
+    symptom:
+      "Item 20 of outbound delivery order 80001003 gets no warehouse task; item 10 was picked normally.",
     cause: "No warehouse process type is determined for item 20.",
     rootCause:
       "Item 20 has the custom item type ZSMP. The warehouse process type determination for warehouse MUHW has an entry " +
@@ -138,7 +156,8 @@ export const ANSWER_KEYS: AnswerKey[] = [
     },
     evidence: [
       {
-        shows: "Item 20 has item type ZSMP and no warehouse process type; item 10 has ODLV and 2010.",
+        shows:
+          "Item 20 has item type ZSMP and no warehouse process type; item 10 has ODLV and 2010.",
         tool: "get_delivery",
         input: { direction: "outbound", delivery: "80001003" },
         expect: {
@@ -157,7 +176,11 @@ export const ANSWER_KEYS: AnswerKey[] = [
       {
         shows: "An entry does exist for the standard item type, so the gap is specific to ZSMP.",
         tool: "get_configuration",
-        input: { area: "wpt_determination", warehouse: "MUHW", filters: { documentType: "OUTB", itemType: "ODLV" } },
+        input: {
+          area: "wpt_determination",
+          warehouse: "MUHW",
+          filters: { documentType: "OUTB", itemType: "ODLV" },
+        },
         expect: { count: 1, "entries.0.warehouseProcessType": "2010" },
       },
       {

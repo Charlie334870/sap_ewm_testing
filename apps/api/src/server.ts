@@ -20,7 +20,9 @@ const app = await buildApp({
 if (bootstrap === "created")
   app.log.info(`First administrator created: ${config.bootstrap.adminEmail}`);
 if (!config.secretsKey) {
-  app.log.warn("SECRETS_KEY is not set: only simulated SAP systems can be registered. See docs/SETUP.md.");
+  app.log.warn(
+    "SECRETS_KEY is not set: only simulated SAP systems can be registered. See docs/SETUP.md.",
+  );
 }
 if (bootstrap === "not_configured") {
   app.log.warn(

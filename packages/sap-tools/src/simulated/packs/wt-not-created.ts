@@ -26,7 +26,11 @@ export const wtNotCreated: ScenarioPack = {
         lastChangedAt: "2026-10-06T06:10:00.000Z",
         items: [
           deliveryItem("10", "P-1001", 10, {
-            reference: { salesOrder: "4501001", purchasingDocument: null, manufacturingOrder: null },
+            reference: {
+              salesOrder: "4501001",
+              purchasingDocument: null,
+              manufacturingOrder: null,
+            },
           }),
         ],
       },
@@ -42,8 +46,17 @@ export const wtNotCreated: ScenarioPack = {
           deliveryItem("10", "P-1001", 40, {
             itemType: "IDLV",
             warehouseProcessType: "1011",
-            statuses: { goodsMovement: S.completed, planning: S.completed, execution: S.completed, completion: S.completed },
-            reference: { salesOrder: null, purchasingDocument: "4500007731", manufacturingOrder: null },
+            statuses: {
+              goodsMovement: S.completed,
+              planning: S.completed,
+              execution: S.completed,
+              completion: S.completed,
+            },
+            reference: {
+              salesOrder: null,
+              purchasingDocument: "4500007731",
+              manufacturingOrder: null,
+            },
           }),
         ],
       },
@@ -59,14 +72,24 @@ export const wtNotCreated: ScenarioPack = {
       }),
     ],
     logs: [
-      log("2026-10-04T09:05:00.000Z", "success", "180000450", "Goods receipt posted for inbound delivery 180000450."),
+      log(
+        "2026-10-04T09:05:00.000Z",
+        "success",
+        "180000450",
+        "Goods receipt posted for inbound delivery 180000450.",
+      ),
       log(
         "2026-10-04T09:05:00.000Z",
         "info",
         "180000450",
         "Inspection document created for item 10, product P-1001, quantity 40 EA. Stock posted to quality inspection.",
       ),
-      log("2026-10-04T09:30:00.000Z", "success", "180000450", "Putaway confirmed to bin 0020-01-03-A."),
+      log(
+        "2026-10-04T09:30:00.000Z",
+        "success",
+        "180000450",
+        "Putaway confirmed to bin 0020-01-03-A.",
+      ),
       log(
         "2026-10-06T06:10:00.000Z",
         "error",

@@ -26,13 +26,26 @@ export const wptNotDetermined: ScenarioPack = {
         lastChangedAt: "2026-10-06T07:45:00.000Z",
         items: [
           deliveryItem("10", "P-2000", 6, {
-            statuses: { goodsMovement: S.notStarted, planning: S.completed, execution: S.completed, completion: S.partial },
-            reference: { salesOrder: "4501003", purchasingDocument: null, manufacturingOrder: null },
+            statuses: {
+              goodsMovement: S.notStarted,
+              planning: S.completed,
+              execution: S.completed,
+              completion: S.partial,
+            },
+            reference: {
+              salesOrder: "4501003",
+              purchasingDocument: null,
+              manufacturingOrder: null,
+            },
           }),
           deliveryItem("20", "P-3000", 1, {
             itemType: "ZSMP",
             warehouseProcessType: null,
-            reference: { salesOrder: "4501003", purchasingDocument: null, manufacturingOrder: null },
+            reference: {
+              salesOrder: "4501003",
+              purchasingDocument: null,
+              manufacturingOrder: null,
+            },
           }),
         ],
       },
@@ -45,8 +58,18 @@ export const wptNotDetermined: ScenarioPack = {
         delivery: "80001003",
         deliveryItem: "10",
         quantity: { target: 6, actual: 6, difference: 0, unit: "EA" },
-        source: { storageType: "0020", storageSection: "0001", storageBin: "0020-02-05-B", handlingUnit: null },
-        destination: { storageType: "9020", storageSection: "0001", storageBin: "GI-ZONE-01", handlingUnit: null },
+        source: {
+          storageType: "0020",
+          storageSection: "0001",
+          storageBin: "0020-02-05-B",
+          handlingUnit: null,
+        },
+        destination: {
+          storageType: "9020",
+          storageSection: "0001",
+          storageBin: "GI-ZONE-01",
+          handlingUnit: null,
+        },
         activityArea: "A020",
         executingResource: "RF-07",
         createdAt: "2026-10-06T07:10:00.000Z",
@@ -78,7 +101,12 @@ export const wptNotDetermined: ScenarioPack = {
       }),
     ],
     logs: [
-      log("2026-10-06T07:10:00.000Z", "success", "80001003", "Warehouse task 100001003 created for item 10."),
+      log(
+        "2026-10-06T07:10:00.000Z",
+        "success",
+        "80001003",
+        "Warehouse task 100001003 created for item 10.",
+      ),
       log(
         "2026-10-06T07:10:00.000Z",
         "error",

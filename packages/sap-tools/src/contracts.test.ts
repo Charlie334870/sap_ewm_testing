@@ -16,20 +16,29 @@ describe("tool contracts", () => {
   it("describes every tool with a JSON schema an agent can read", () => {
     for (const tool of describeTools()) {
       expect(tool.inputSchema.type, tool.name).toBe("object");
-      expect(Object.keys(tool.inputSchema.properties as object).length, tool.name).toBeGreaterThan(0);
+      expect(Object.keys(tool.inputSchema.properties as object).length, tool.name).toBeGreaterThan(
+        0,
+      );
       expect(tool.description.length, tool.name).toBeGreaterThan(40);
     }
   });
 
   it("normalises and validates input", () => {
     const tasks = findTool("get_warehouse_tasks")!;
-    expect(tasks.input.parse({ warehouse: " muhw ", delivery: "80001001" })).toMatchObject({ warehouse: "MUHW", limit: 50 });
+    expect(tasks.input.parse({ warehouse: " muhw ", delivery: "80001001" })).toMatchObject({
+      warehouse: "MUHW",
+      limit: 50,
+    });
     expect(tasks.input.safeParse({ warehouse: "MUHW" }).success).toBe(false); // nothing to select by
     expect(tasks.input.safeParse({ warehouse: "TOO-LONG", delivery: "1" }).success).toBe(false);
-    expect(tasks.input.safeParse({ warehouse: "MUHW", delivery: "1", limit: 5000 }).success).toBe(false);
+    expect(tasks.input.safeParse({ warehouse: "MUHW", delivery: "1", limit: 5000 }).success).toBe(
+      false,
+    );
 
     const config = findTool("get_configuration")!;
-    expect(config.input.safeParse({ area: "any_table_i_like", warehouse: "MUHW" }).success).toBe(false);
+    expect(config.input.safeParse({ area: "any_table_i_like", warehouse: "MUHW" }).success).toBe(
+      false,
+    );
     expect(findTool("drop_table")).toBeUndefined();
   });
 });

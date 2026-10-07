@@ -2,7 +2,13 @@ import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { schema } from "@ewm/database";
 import { createFakeSap, FAKE_API_KEY, type FakeSap } from "@ewm/sap-tools/testing";
-import { createProjectWithTeam, createTestContext, createUser, signIn, type TestContext } from "./helpers";
+import {
+  createProjectWithTeam,
+  createTestContext,
+  createUser,
+  signIn,
+  type TestContext,
+} from "./helpers";
 
 let ctx: TestContext;
 let sap: FakeSap;
@@ -14,15 +20,41 @@ let sandboxId: string;
 beforeAll(async () => {
   sap = createFakeSap({
     data: {
-      WarehouseAvailableStock: [{ EWMWarehouse: "1750", Product: "EWMS4-01", EWMStockType: "F2", AvailableEWMStockQty: 95, EWMStockQuantityBaseUnit: "EA" }],
-      WarehouseTask: [{ Warehouse: "1750", WarehouseTask: "100000001", Delivery: "80000123", WarehouseTaskStatus: "C" }],
+      WarehouseAvailableStock: [
+        {
+          EWMWarehouse: "1750",
+          Product: "EWMS4-01",
+          EWMStockType: "F2",
+          AvailableEWMStockQty: 95,
+          EWMStockQuantityBaseUnit: "EA",
+        },
+      ],
+      WarehouseTask: [
+        {
+          Warehouse: "1750",
+          WarehouseTask: "100000001",
+          Delivery: "80000123",
+          WarehouseTaskStatus: "C",
+        },
+      ],
     },
   });
   ctx = await createTestContext({ sapFetch: sap.fetch });
   team = await createProjectWithTeam(ctx, "TOOL");
   p = `/projects/${team.project.id}`;
-  simulatedId = (await team.admin.post(`${p}/sap-systems`, { name: "Simulated EWM", sid: "S4D", client: "100", environment: "DEV" })).json().sapSystem.id;
-  const sandbox = await team.admin.post(`${p}/sap-systems`, { name: "SAP API sandbox", adapter: "sap_api_sandbox", apiKey: FAKE_API_KEY });
+  simulatedId = (
+    await team.admin.post(`${p}/sap-systems`, {
+      name: "Simulated EWM",
+      sid: "S4D",
+      client: "100",
+      environment: "DEV",
+    })
+  ).json().sapSystem.id;
+  const sandbox = await team.admin.post(`${p}/sap-systems`, {
+    name: "SAP API sandbox",
+    adapter: "sap_api_sandbox",
+    apiKey: FAKE_API_KEY,
+  });
   expect(sandbox.statusCode, sandbox.body).toBe(201);
   sandboxId = sandbox.json().sapSystem.id;
 });
@@ -32,7 +64,9 @@ const tool = (systemId: string, name: string) => `${p}/sap-systems/${systemId}/t
 
 describe("running tools on a simulated system", () => {
   it("returns the data in an envelope that says it is simulated, and records the call", async () => {
-    const res = await team.consultant.post(tool(simulatedId, "get_delivery"), { input: { direction: "outbound", delivery: "80001001" } });
+    const res = await team.consultant.post(tool(simulatedId, "get_delivery"), {
+      input: { direction: "outbound", delivery: "80001001" },
+    });
     expect(res.statusCode).toBe(200);
     const result = res.json().result;
     expect(result).toMatchObject({
@@ -44,7 +78,8 @@ describe("running tools on a simulated system", () => {
     });
     expect(result.error).toBeUndefined();
 
-    const recorded = (await team.consultant.get(`${p}/tool-calls/${result.toolCallId}`)).json().toolCall;
+    const recorded = (await team.consultant.get(`${p}/tool-calls/${result.toolCallId}`)).json()
+      .toolCall;
     expect(recorded).toMatchObject({
       toolName: "get_delivery",
       status: "ok",
@@ -65,49 +100,87 @@ describe("running tools on a simulated system", () => {
   });
 
   it("rejects invalid input without touching the system, and still records the attempt", async () => {
-    const res = await team.consultant.post(tool(simulatedId, "get_warehouse_tasks"), { input: { warehouse: "MUHW" } });
+    const res = await team.consultant.post(tool(simulatedId, "get_warehouse_tasks"), {
+      input: { warehouse: "MUHW" },
+    });
     expect(res.statusCode).toBe(200);
     const result = res.json().result;
     expect(result.status).toBe("rejected");
     expect(result.error.code).toBe("invalid_input");
     expect(result.data).toBeUndefined();
-    const recorded = (await team.consultant.get(`${p}/tool-calls/${result.toolCallId}`)).json().toolCall;
+    const recorded = (await team.consultant.get(`${p}/tool-calls/${result.toolCallId}`)).json()
+      .toolCall;
     expect(recorded).toMatchObject({ status: "rejected", output: null });
   });
 
   it("answers 'not found' for a tool that does not exist and a system of another project", async () => {
-    expect((await team.consultant.post(tool(simulatedId, "delete_everything"), { input: {} })).statusCode).toBe(404);
+    expect(
+      (await team.consultant.post(tool(simulatedId, "delete_everything"), { input: {} }))
+        .statusCode,
+    ).toBe(404);
     const other = await createProjectWithTeam(ctx, "OTHR");
-    const foreign = (await other.admin.post(`/projects/${other.project.id}/sap-systems`, { name: "Theirs", sid: "X4D", client: "100", environment: "DEV" })).json().sapSystem.id;
+    const foreign = (
+      await other.admin.post(`/projects/${other.project.id}/sap-systems`, {
+        name: "Theirs",
+        sid: "X4D",
+        client: "100",
+        environment: "DEV",
+      })
+    ).json().sapSystem.id;
     const viaMine = await team.consultant.post(tool(foreign, "get_queue_status"), { input: {} });
     expect(viaMine.statusCode).toBe(404);
-    const viaTheirs = await team.consultant.post(`/projects/${other.project.id}/sap-systems/${foreign}/tools/get_queue_status`, { input: {} });
+    const viaTheirs = await team.consultant.post(
+      `/projects/${other.project.id}/sap-systems/${foreign}/tools/get_queue_status`,
+      { input: {} },
+    );
     expect(viaTheirs.statusCode).toBe(404);
     // Their tool calls stay theirs.
-    await other.consultant.post(`/projects/${other.project.id}/sap-systems/${foreign}/tools/get_queue_status`, { input: {} });
+    await other.consultant.post(
+      `/projects/${other.project.id}/sap-systems/${foreign}/tools/get_queue_status`,
+      { input: {} },
+    );
     const mine = (await team.consultant.get(`${p}/tool-calls?limit=200`)).json().toolCalls;
     expect(mine.every((c: { sapSystemId: string }) => c.sapSystemId !== foreign)).toBe(true);
   });
 
   it("links a call to a ticket of the same project only", async () => {
     const ticket = (await team.analyst.post(`${p}/tickets`, { title: "Linked" })).json().ticket;
-    const ok = (await team.consultant.post(tool(simulatedId, "get_queue_status"), { input: {}, ticketId: ticket.id })).json().result;
+    const ok = (
+      await team.consultant.post(tool(simulatedId, "get_queue_status"), {
+        input: {},
+        ticketId: ticket.id,
+      })
+    ).json().result;
     expect(ok.status).toBe("ok");
-    expect((await team.consultant.get(`${p}/tool-calls/${ok.toolCallId}`)).json().toolCall.ticketNumber).toBe(ticket.number);
+    expect(
+      (await team.consultant.get(`${p}/tool-calls/${ok.toolCallId}`)).json().toolCall.ticketNumber,
+    ).toBe(ticket.number);
 
     const other = await createProjectWithTeam(ctx, "TKT");
-    const theirs = (await other.analyst.post(`/projects/${other.project.id}/tickets`, { title: "Theirs" })).json().ticket;
-    const crossed = (await team.consultant.post(tool(simulatedId, "get_queue_status"), { input: {}, ticketId: theirs.id })).json().result;
+    const theirs = (
+      await other.analyst.post(`/projects/${other.project.id}/tickets`, { title: "Theirs" })
+    ).json().ticket;
+    const crossed = (
+      await team.consultant.post(tool(simulatedId, "get_queue_status"), {
+        input: {},
+        ticketId: theirs.id,
+      })
+    ).json().result;
     expect(crossed).toMatchObject({ status: "rejected", error: { code: "ticket_not_found" } });
   });
 
   it("creates the sample ticket of each scenario once", async () => {
-    expect((await team.consultant.post(`${p}/sap-systems/${simulatedId}/sample-tickets`)).statusCode).toBe(403);
+    expect(
+      (await team.consultant.post(`${p}/sap-systems/${simulatedId}/sample-tickets`)).statusCode,
+    ).toBe(403);
     const first = await team.admin.post(`${p}/sap-systems/${simulatedId}/sample-tickets`);
     expect(first.statusCode).toBe(201);
     expect(first.json().created).toHaveLength(3);
-    expect((await team.admin.post(`${p}/sap-systems/${simulatedId}/sample-tickets`)).json()).toMatchObject({ created: [], skipped: 3 });
-    const detail = (await team.analyst.get(`${p}/tickets/${first.json().created[0].id}`)).json().ticket;
+    expect(
+      (await team.admin.post(`${p}/sap-systems/${simulatedId}/sample-tickets`)).json(),
+    ).toMatchObject({ created: [], skipped: 3 });
+    const detail = (await team.analyst.get(`${p}/tickets/${first.json().created[0].id}`)).json()
+      .ticket;
     expect(detail).toMatchObject({ sapSystemAdapter: "simulated", warehouse: "MUHW" });
     expect(detail.title).toContain("80001001");
   });
@@ -123,7 +196,10 @@ describe("running tools on a simulated system", () => {
 
 describe("SAP API sandbox connection", () => {
   it("stores the API key encrypted and never gives it back", async () => {
-    const [credential] = await ctx.database.db.select().from(schema.sapCredentials).where(eq(schema.sapCredentials.sapSystemId, sandboxId));
+    const [credential] = await ctx.database.db
+      .select()
+      .from(schema.sapCredentials)
+      .where(eq(schema.sapCredentials.sapSystemId, sandboxId));
     expect(credential!.secretEncrypted).not.toContain(FAKE_API_KEY);
 
     const everything = [
@@ -134,15 +210,28 @@ describe("SAP API sandbox connection", () => {
     ];
     for (const res of everything) expect(res.body).not.toContain(FAKE_API_KEY);
     const system = (await team.admin.get(`${p}/sap-systems/${sandboxId}`)).json().sapSystem;
-    expect(system).toMatchObject({ sid: "SBX", client: "000", environment: "DEV", source: "SAP_SANDBOX", baseUrl: "https://sandbox.api.sap.com/s4hanacloud" });
+    expect(system).toMatchObject({
+      sid: "SBX",
+      client: "000",
+      environment: "DEV",
+      source: "SAP_SANDBOX",
+      baseUrl: "https://sandbox.api.sap.com/s4hanacloud",
+    });
   });
 
   it("reads real-shaped data through the gateway and labels it as sandbox data", async () => {
-    const result = (await team.consultant.post(tool(sandboxId, "get_stock"), { input: { warehouse: "1750", product: "EWMS4-01" } })).json().result;
+    const result = (
+      await team.consultant.post(tool(sandboxId, "get_stock"), {
+        input: { warehouse: "1750", product: "EWMS4-01" },
+      })
+    ).json().result;
     expect(result).toMatchObject({
       status: "ok",
       source: "SAP_SANDBOX",
-      data: { basis: "available_only", rows: [{ stockType: "F2", availableQuantity: 95, physicalQuantity: null }] },
+      data: {
+        basis: "available_only",
+        rows: [{ stockType: "F2", availableQuantity: 95, physicalQuantity: null }],
+      },
     });
     expect(sap.requests.at(-1)!.headers.apikey).toBe(FAKE_API_KEY);
     expect(sap.requests.every((r) => r.method === "GET")).toBe(true);
@@ -150,7 +239,11 @@ describe("SAP API sandbox connection", () => {
 
   it("refuses tools SAP has no released API for, and explains why", async () => {
     const before = sap.requests.length;
-    const result = (await team.consultant.post(tool(sandboxId, "get_application_log"), { input: { externalId: "80000123" } })).json().result;
+    const result = (
+      await team.consultant.post(tool(sandboxId, "get_application_log"), {
+        input: { externalId: "80000123" },
+      })
+    ).json().result;
     expect(result.status).toBe("rejected");
     expect(result.error).toMatchObject({ code: "not_supported" });
     expect(result.error.message).toContain("SAP has not released an API");
@@ -168,22 +261,49 @@ describe("SAP API sandbox connection", () => {
     const stored = (await team.admin.get(`${p}/sap-systems/${sandboxId}`)).json().sapSystem;
     expect(stored.lastCheck.summary).toBe(check.summary);
     const audit = (await team.admin.get(`${p}/audit-logs?limit=5`)).json().entries[0];
-    expect(audit).toMatchObject({ action: "sap_system.tested", data: { reachable: true, toolsAvailable: 6 } });
-    expect((await team.consultant.post(`${p}/sap-systems/${simulatedId}/test`)).statusCode).toBe(400);
+    expect(audit).toMatchObject({
+      action: "sap_system.tested",
+      data: { reachable: true, toolsAvailable: 6 },
+    });
+    expect((await team.consultant.post(`${p}/sap-systems/${simulatedId}/test`)).statusCode).toBe(
+      400,
+    );
   });
 
   it("reports a wrong key as an authentication failure, then works after the key is replaced", async () => {
-    expect((await team.consultant.put(`${p}/sap-systems/${sandboxId}/credential`, { apiKey: "some-other-key-123" })).statusCode).toBe(403);
-    expect((await team.admin.put(`${p}/sap-systems/${sandboxId}/credential`, { apiKey: "some-other-key-123" })).statusCode).toBe(200);
-    const failed = (await team.consultant.post(tool(sandboxId, "get_stock"), { input: { warehouse: "1750", product: "EWMS4-01" } })).json().result;
+    expect(
+      (
+        await team.consultant.put(`${p}/sap-systems/${sandboxId}/credential`, {
+          apiKey: "some-other-key-123",
+        })
+      ).statusCode,
+    ).toBe(403);
+    expect(
+      (
+        await team.admin.put(`${p}/sap-systems/${sandboxId}/credential`, {
+          apiKey: "some-other-key-123",
+        })
+      ).statusCode,
+    ).toBe(200);
+    const failed = (
+      await team.consultant.post(tool(sandboxId, "get_stock"), {
+        input: { warehouse: "1750", product: "EWMS4-01" },
+      })
+    ).json().result;
     expect(failed).toMatchObject({ status: "error", error: { code: "authentication_failed" } });
     expect(failed.data).toBeUndefined();
     expect(JSON.stringify(failed)).not.toContain("some-other-key-123");
 
     await team.admin.put(`${p}/sap-systems/${sandboxId}/credential`, { apiKey: FAKE_API_KEY });
-    const again = (await team.consultant.post(tool(sandboxId, "get_stock"), { input: { warehouse: "1750", product: "EWMS4-01" } })).json().result;
+    const again = (
+      await team.consultant.post(tool(sandboxId, "get_stock"), {
+        input: { warehouse: "1750", product: "EWMS4-01" },
+      })
+    ).json().result;
     expect(again.status).toBe("ok");
-    const actions = (await team.admin.get(`${p}/audit-logs?limit=10`)).json().entries.map((e: { action: string }) => e.action);
+    const actions = (await team.admin.get(`${p}/audit-logs?limit=10`))
+      .json()
+      .entries.map((e: { action: string }) => e.action);
     expect(actions.filter((a: string) => a === "sap_system.credential_changed")).toHaveLength(2);
   });
 
@@ -191,20 +311,41 @@ describe("SAP API sandbox connection", () => {
     const fresh = await createProjectWithTeam(ctx, "SBXX");
     const base = `/projects/${fresh.project.id}/sap-systems`;
     const body = { name: "Sandbox", adapter: "sap_api_sandbox", apiKey: FAKE_API_KEY };
-    for (const baseUrl of ["https://evil.example/s4hanacloud", "http://sandbox.api.sap.com/s4hanacloud", "https://localhost:4000", "https://169.254.169.254/latest"]) {
+    for (const baseUrl of [
+      "https://evil.example/s4hanacloud",
+      "http://sandbox.api.sap.com/s4hanacloud",
+      "https://localhost:4000",
+      "https://169.254.169.254/latest",
+    ]) {
       const res = await fresh.admin.post(base, { ...body, baseUrl });
       expect(res.statusCode, baseUrl).toBe(400);
     }
     expect((await fresh.admin.post(base, { ...body, environment: "PROD" })).statusCode).toBe(400);
-    expect((await fresh.admin.post(base, { name: "No key", adapter: "sap_api_sandbox" })).statusCode).toBe(400);
+    expect(
+      (await fresh.admin.post(base, { name: "No key", adapter: "sap_api_sandbox" })).statusCode,
+    ).toBe(400);
     expect((await fresh.consultant.post(base, body)).statusCode).toBe(403);
     expect((await fresh.admin.post(base, body)).statusCode).toBe(201);
     expect((await fresh.admin.post(base, body)).statusCode).toBe(409);
-    expect((await fresh.admin.post(base, { name: "Client PRD", adapter: "sap", sid: "PRD", client: "100", environment: "PROD" })).statusCode).toBe(400);
+    expect(
+      (
+        await fresh.admin.post(base, {
+          name: "Client PRD",
+          adapter: "sap",
+          sid: "PRD",
+          client: "100",
+          environment: "PROD",
+        })
+      ).statusCode,
+    ).toBe(400);
   });
 
   it("never treats a value from a ticket or a user as part of the filter", async () => {
-    const result = (await team.consultant.post(tool(sandboxId, "get_warehouse_tasks"), { input: { warehouse: "1750", delivery: "x' or Warehouse eq '1750" } })).json().result;
+    const result = (
+      await team.consultant.post(tool(sandboxId, "get_warehouse_tasks"), {
+        input: { warehouse: "1750", delivery: "x' or Warehouse eq '1750" },
+      })
+    ).json().result;
     expect(result.status).toBe("ok");
     expect(result.data.tasks).toEqual([]);
   });
@@ -216,7 +357,9 @@ describe("tool call history", () => {
     expect(all.length).toBeGreaterThan(5);
     const times = all.map((c: { createdAt: string }) => c.createdAt);
     expect(times).toEqual([...times].sort().reverse());
-    const sandboxOnly = (await team.consultant.get(`${p}/tool-calls?sapSystemId=${sandboxId}`)).json().toolCalls;
+    const sandboxOnly = (
+      await team.consultant.get(`${p}/tool-calls?sapSystemId=${sandboxId}`)
+    ).json().toolCalls;
     expect(sandboxOnly.length).toBeGreaterThan(0);
     expect(sandboxOnly.every((c: { source: string }) => c.source === "SAP_SANDBOX")).toBe(true);
   });
@@ -225,6 +368,8 @@ describe("tool call history", () => {
     const outsider = await signIn(ctx, await createUser(ctx, team.org.id));
     expect((await outsider.get(`${p}/tool-calls`)).statusCode).toBe(404);
     expect((await outsider.get(`${p}/sap-systems/${simulatedId}`)).statusCode).toBe(404);
-    expect((await outsider.post(tool(simulatedId, "get_queue_status"), { input: {} })).statusCode).toBe(404);
+    expect(
+      (await outsider.post(tool(simulatedId, "get_queue_status"), { input: {} })).statusCode,
+    ).toBe(404);
   });
 });

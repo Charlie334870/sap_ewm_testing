@@ -113,17 +113,21 @@ export function projectRoutes(app: FastifyInstance, { db }: AppDeps) {
     return reply.code(201).send({ ticket });
   });
 
-  app.get<PT>("/projects/:projectId/tickets/:ticketId", { config: { tokenAllowed: true } }, async (req) => {
-    const { project } = await requireProjectAccess(
-      db,
-      requireUser(req),
-      req.params.projectId,
-      "project.view",
-    );
-    if (!isUuid(req.params.ticketId)) throw notFound("Ticket");
-    const ticket = await tickets.getTicket(db, project.id, req.params.ticketId);
-    return { ticket: { ...ticket, reference: `${project.key}-${ticket.number}` } };
-  });
+  app.get<PT>(
+    "/projects/:projectId/tickets/:ticketId",
+    { config: { tokenAllowed: true } },
+    async (req) => {
+      const { project } = await requireProjectAccess(
+        db,
+        requireUser(req),
+        req.params.projectId,
+        "project.view",
+      );
+      if (!isUuid(req.params.ticketId)) throw notFound("Ticket");
+      const ticket = await tickets.getTicket(db, project.id, req.params.ticketId);
+      return { ticket: { ...ticket, reference: `${project.key}-${ticket.number}` } };
+    },
+  );
 
   app.post<PT>("/projects/:projectId/tickets/:ticketId/comments", async (req, reply) => {
     const user = requireUser(req);

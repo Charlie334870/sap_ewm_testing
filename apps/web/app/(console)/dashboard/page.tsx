@@ -79,8 +79,9 @@ function ProjectDashboard() {
             ))}
           </ul>
           <p className="muted" style={{ marginTop: 10, fontSize: "0.9rem" }}>
-            This is Milestone {CURRENT_MILESTONE}: the foundation. There is no SAP connection and no
-            agent in it yet.
+            This is Milestone {CURRENT_MILESTONE}: read-only SAP tools on a simulated system and on
+            SAP&apos;s API sandbox. The built-in agent arrives with Milestone 3; until then Claude
+            can use the tools through <Link href="/agent-access">agent access</Link>.
           </p>
         </section>
       </div>

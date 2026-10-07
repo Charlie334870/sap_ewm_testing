@@ -41,7 +41,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   }
   const e = parsed.data;
   if (e.SECRETS_KEY?.trim() && !/^[0-9a-fA-F]{64}$/.test(e.SECRETS_KEY.trim())) {
-    throw new Error("SECRETS_KEY must be 64 hexadecimal characters. See docs/SETUP.md for how to create one.");
+    throw new Error(
+      "SECRETS_KEY must be 64 hexadecimal characters. See docs/SETUP.md for how to create one.",
+    );
   }
   if (e.BOOTSTRAP_ADMIN_PASSWORD && e.BOOTSTRAP_ADMIN_PASSWORD.length < PASSWORD_MIN_LENGTH) {
     throw new Error(`BOOTSTRAP_ADMIN_PASSWORD must be at least ${PASSWORD_MIN_LENGTH} characters.`);

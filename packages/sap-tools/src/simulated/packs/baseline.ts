@@ -41,16 +41,56 @@ export const baseline: Partial<WorldData> = {
       storageType: "0020",
       removalRule: "FIFO",
     }),
-    config("storage_types", W, { storageType: "0020", description: "Rack storage", role: "Standard storage" }),
-    config("storage_types", W, { storageType: "0050", description: "Fixed bin picking", role: "Standard storage" }),
-    config("storage_types", W, { storageType: "9010", description: "Goods receipt zone", role: "Staging area" }),
-    config("storage_types", W, { storageType: "9020", description: "Goods issue zone", role: "Staging area" }),
-    config("stock_types", W, { stockType: "F1", description: "Unrestricted use in putaway", availableForPicking: false }),
-    config("stock_types", W, { stockType: "F2", description: "Unrestricted use in warehouse", availableForPicking: true }),
-    config("stock_types", W, { stockType: "Q3", description: "Quality inspection in putaway", availableForPicking: false }),
-    config("stock_types", W, { stockType: "Q4", description: "Quality inspection in warehouse", availableForPicking: false }),
-    config("stock_types", W, { stockType: "B5", description: "Blocked in putaway", availableForPicking: false }),
-    config("stock_types", W, { stockType: "B6", description: "Blocked in warehouse", availableForPicking: false }),
+    config("storage_types", W, {
+      storageType: "0020",
+      description: "Rack storage",
+      role: "Standard storage",
+    }),
+    config("storage_types", W, {
+      storageType: "0050",
+      description: "Fixed bin picking",
+      role: "Standard storage",
+    }),
+    config("storage_types", W, {
+      storageType: "9010",
+      description: "Goods receipt zone",
+      role: "Staging area",
+    }),
+    config("storage_types", W, {
+      storageType: "9020",
+      description: "Goods issue zone",
+      role: "Staging area",
+    }),
+    config("stock_types", W, {
+      stockType: "F1",
+      description: "Unrestricted use in putaway",
+      availableForPicking: false,
+    }),
+    config("stock_types", W, {
+      stockType: "F2",
+      description: "Unrestricted use in warehouse",
+      availableForPicking: true,
+    }),
+    config("stock_types", W, {
+      stockType: "Q3",
+      description: "Quality inspection in putaway",
+      availableForPicking: false,
+    }),
+    config("stock_types", W, {
+      stockType: "Q4",
+      description: "Quality inspection in warehouse",
+      availableForPicking: false,
+    }),
+    config("stock_types", W, {
+      stockType: "B5",
+      description: "Blocked in putaway",
+      availableForPicking: false,
+    }),
+    config("stock_types", W, {
+      stockType: "B6",
+      description: "Blocked in warehouse",
+      availableForPicking: false,
+    }),
     config("warehouse_order_creation_rules", W, {
       rule: "PICK01",
       description: "Picking by activity area",
@@ -71,7 +111,12 @@ export const baseline: Partial<WorldData> = {
       lastChangedAt: "2026-10-02T09:41:00.000Z",
       items: [
         deliveryItem("10", "P-2000", 24, {
-          statuses: { goodsMovement: S.completed, planning: S.completed, execution: S.completed, completion: S.completed },
+          statuses: {
+            goodsMovement: S.completed,
+            planning: S.completed,
+            execution: S.completed,
+            completion: S.completed,
+          },
           goodsMovementBin: "GI-ZONE-01",
           reference: { salesOrder: "4500990", purchasingDocument: null, manufacturingOrder: null },
         }),
@@ -102,8 +147,18 @@ export const baseline: Partial<WorldData> = {
       delivery: "80000990",
       deliveryItem: "10",
       quantity: { target: 24, actual: 24, difference: 0, unit: "EA" },
-      source: { storageType: "0020", storageSection: "0001", storageBin: "0020-02-05-B", handlingUnit: null },
-      destination: { storageType: "9020", storageSection: "0001", storageBin: "GI-ZONE-01", handlingUnit: null },
+      source: {
+        storageType: "0020",
+        storageSection: "0001",
+        storageBin: "0020-02-05-B",
+        handlingUnit: null,
+      },
+      destination: {
+        storageType: "9020",
+        storageSection: "0001",
+        storageBin: "GI-ZONE-01",
+        handlingUnit: null,
+      },
       activityArea: "A020",
       executingResource: "RF-07",
       createdAt: "2026-10-02T08:02:00.000Z",
@@ -170,7 +225,17 @@ export const baseline: Partial<WorldData> = {
   ],
 
   logs: [
-    log("2026-10-02T08:02:00.000Z", "success", "80000990", "Warehouse task 100000990 created for item 10."),
-    log("2026-10-02T09:41:00.000Z", "success", "80000990", "Goods issue posted for outbound delivery order 80000990."),
+    log(
+      "2026-10-02T08:02:00.000Z",
+      "success",
+      "80000990",
+      "Warehouse task 100000990 created for item 10.",
+    ),
+    log(
+      "2026-10-02T09:41:00.000Z",
+      "success",
+      "80000990",
+      "Goods issue posted for outbound delivery order 80000990.",
+    ),
   ],
 };

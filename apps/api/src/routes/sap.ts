@@ -34,30 +34,57 @@ export function sapRoutes(app: FastifyInstance, deps: AppDeps & { toolRateLimit:
 
   // ------------------------------------------------------------ SAP systems
   app.get<P>("/projects/:projectId/sap-systems", token, async (req) => {
-    const { project } = await requireProjectAccess(db, requireUser(req), req.params.projectId, "project.view");
-    return { sapSystems: await sapSystems.listSapSystems(db, project.id), canStoreSecrets: deps.secrets !== null };
+    const { project } = await requireProjectAccess(
+      db,
+      requireUser(req),
+      req.params.projectId,
+      "project.view",
+    );
+    return {
+      sapSystems: await sapSystems.listSapSystems(db, project.id),
+      canStoreSecrets: deps.secrets !== null,
+    };
   });
 
   app.post<P>("/projects/:projectId/sap-systems", async (req, reply) => {
     const user = requireUser(req);
-    const { project } = await requireProjectAccess(db, user, req.params.projectId, "sap_system.manage");
+    const { project } = await requireProjectAccess(
+      db,
+      user,
+      req.params.projectId,
+      "sap_system.manage",
+    );
     const input = parse(createSapSystemSchema, req.body);
-    const sapSystem = await sapSystems.createSapSystem(deps, user, project.id, input, { ip: req.ip });
+    const sapSystem = await sapSystems.createSapSystem(deps, user, project.id, input, {
+      ip: req.ip,
+    });
     return reply.code(201).send({ sapSystem });
   });
 
   app.get<PS>("/projects/:projectId/sap-systems/:systemId", token, async (req) => {
-    const { project } = await requireProjectAccess(db, requireUser(req), req.params.projectId, "project.view");
+    const { project } = await requireProjectAccess(
+      db,
+      requireUser(req),
+      req.params.projectId,
+      "project.view",
+    );
     if (!isUuid(req.params.systemId)) throw notFound("SAP system");
     return { sapSystem: await sapSystems.getSapSystem(deps, project.id, req.params.systemId) };
   });
 
   app.put<PS>("/projects/:projectId/sap-systems/:systemId/credential", async (req) => {
     const user = requireUser(req);
-    const { project } = await requireProjectAccess(db, user, req.params.projectId, "sap_system.manage");
+    const { project } = await requireProjectAccess(
+      db,
+      user,
+      req.params.projectId,
+      "sap_system.manage",
+    );
     if (!isUuid(req.params.systemId)) throw notFound("SAP system");
     const input = parse(updateSapCredentialSchema, req.body);
-    await sapSystems.updateCredential(deps, user, project.id, req.params.systemId, input.apiKey, { ip: req.ip });
+    await sapSystems.updateCredential(deps, user, project.id, req.params.systemId, input.apiKey, {
+      ip: req.ip,
+    });
     return { ok: true };
   });
 
@@ -65,14 +92,27 @@ export function sapRoutes(app: FastifyInstance, deps: AppDeps & { toolRateLimit:
     const user = requireUser(req);
     const { project } = await requireProjectAccess(db, user, req.params.projectId, "tool.execute");
     if (!isUuid(req.params.systemId)) throw notFound("SAP system");
-    return { check: await sapSystems.testConnection(deps, user, project.id, req.params.systemId, { ip: req.ip }) };
+    return {
+      check: await sapSystems.testConnection(deps, user, project.id, req.params.systemId, {
+        ip: req.ip,
+      }),
+    };
   });
 
   app.post<PS>("/projects/:projectId/sap-systems/:systemId/sample-tickets", async (req, reply) => {
     const user = requireUser(req);
-    const { project } = await requireProjectAccess(db, user, req.params.projectId, "sap_system.manage");
+    const { project } = await requireProjectAccess(
+      db,
+      user,
+      req.params.projectId,
+      "sap_system.manage",
+    );
     if (!isUuid(req.params.systemId)) throw notFound("SAP system");
-    return reply.code(201).send(await sapSystems.createSampleTickets(deps, user, project.id, req.params.systemId, { ip: req.ip }));
+    return reply.code(201).send(
+      await sapSystems.createSampleTickets(deps, user, project.id, req.params.systemId, {
+        ip: req.ip,
+      }),
+    );
   });
 
   // ------------------------------------------------------------ running tools
@@ -90,22 +130,46 @@ export function sapRoutes(app: FastifyInstance, deps: AppDeps & { toolRateLimit:
     },
     async (req) => {
       const user = requireUser(req);
-      const { project } = await requireProjectAccess(db, user, req.params.projectId, "tool.execute");
+      const { project } = await requireProjectAccess(
+        db,
+        user,
+        req.params.projectId,
+        "tool.execute",
+      );
       if (!isUuid(req.params.systemId)) throw notFound("SAP system");
       if (!findTool(req.params.toolName)) throw notFound("Tool");
       const body = parse(runToolSchema, req.body ?? {});
-      return { result: await tools.runTool(deps, user, project.id, req.params.systemId, req.params.toolName, body) };
+      return {
+        result: await tools.runTool(
+          deps,
+          user,
+          project.id,
+          req.params.systemId,
+          req.params.toolName,
+          body,
+        ),
+      };
     },
   );
 
   app.get<P>("/projects/:projectId/tool-calls", async (req) => {
-    const { project } = await requireProjectAccess(db, requireUser(req), req.params.projectId, "tool_call.view");
+    const { project } = await requireProjectAccess(
+      db,
+      requireUser(req),
+      req.params.projectId,
+      "tool_call.view",
+    );
     const filter = parse(toolCallListQuerySchema, req.query);
     return { toolCalls: await tools.listToolCalls(db, project.id, filter) };
   });
 
   app.get<PI>("/projects/:projectId/tool-calls/:id", async (req) => {
-    const { project } = await requireProjectAccess(db, requireUser(req), req.params.projectId, "tool_call.view");
+    const { project } = await requireProjectAccess(
+      db,
+      requireUser(req),
+      req.params.projectId,
+      "tool_call.view",
+    );
     if (!isUuid(req.params.id)) throw notFound("Tool call");
     return { toolCall: await tools.getToolCall(db, project.id, req.params.id) };
   });
@@ -113,22 +177,47 @@ export function sapRoutes(app: FastifyInstance, deps: AppDeps & { toolRateLimit:
   // ------------------------------------------------------------ agent access tokens
   app.get<P>("/projects/:projectId/api-tokens", async (req) => {
     const user = requireUser(req);
-    const { project, role } = await requireProjectAccess(db, user, req.params.projectId, "api_token.manage");
-    return { tokens: await apiTokens.listApiTokens(db, project.id, { id: user.id, seesAll: role === "admin" }) };
+    const { project, role } = await requireProjectAccess(
+      db,
+      user,
+      req.params.projectId,
+      "api_token.manage",
+    );
+    return {
+      tokens: await apiTokens.listApiTokens(db, project.id, {
+        id: user.id,
+        seesAll: role === "admin",
+      }),
+    };
   });
 
   app.post<P>("/projects/:projectId/api-tokens", async (req, reply) => {
     const user = requireUser(req);
-    const { project } = await requireProjectAccess(db, user, req.params.projectId, "api_token.manage");
+    const { project } = await requireProjectAccess(
+      db,
+      user,
+      req.params.projectId,
+      "api_token.manage",
+    );
     const input = parse(createApiTokenSchema, req.body);
-    return reply.code(201).send({ token: await apiTokens.createApiToken(db, user, project.id, input, { ip: req.ip }) });
+    return reply
+      .code(201)
+      .send({ token: await apiTokens.createApiToken(db, user, project.id, input, { ip: req.ip }) });
   });
 
   app.delete<PI>("/projects/:projectId/api-tokens/:id", async (req) => {
     const user = requireUser(req);
-    const { project, role } = await requireProjectAccess(db, user, req.params.projectId, "api_token.manage");
+    const { project, role } = await requireProjectAccess(
+      db,
+      user,
+      req.params.projectId,
+      "api_token.manage",
+    );
     if (!isUuid(req.params.id)) throw notFound("Token");
-    await apiTokens.revokeApiToken(db, user, project.id, req.params.id, { ip: req.ip, mayRevokeOthers: role === "admin" });
+    await apiTokens.revokeApiToken(db, user, project.id, req.params.id, {
+      ip: req.ip,
+      mayRevokeOthers: role === "admin",
+    });
     return { ok: true };
   });
 
@@ -140,7 +229,12 @@ export function sapRoutes(app: FastifyInstance, deps: AppDeps & { toolRateLimit:
   app.get("/agent/context", token, async (req) => {
     const user = requireUser(req);
     if (!user.token) throw forbidden("This address is for agent access tokens.");
-    const { project, role } = await requireProjectAccess(db, user, user.token.projectId, "tool.execute");
+    const { project, role } = await requireProjectAccess(
+      db,
+      user,
+      user.token.projectId,
+      "tool.execute",
+    );
     const systems = await sapSystems.listSapSystems(db, project.id);
     return {
       project: { id: project.id, key: project.key, name: project.name },
@@ -162,7 +256,13 @@ export function sapRoutes(app: FastifyInstance, deps: AppDeps & { toolRateLimit:
       tools: describeTools(),
       openTickets: (await tickets.listTickets(db, project.id))
         .filter((t) => t.status !== "closed" && t.status !== "resolved")
-        .map((t) => ({ id: t.id, reference: `${project.key}-${t.number}`, title: t.title, status: t.status, priority: t.priority })),
+        .map((t) => ({
+          id: t.id,
+          reference: `${project.key}-${t.number}`,
+          title: t.title,
+          status: t.status,
+          priority: t.priority,
+        })),
     };
   });
 }

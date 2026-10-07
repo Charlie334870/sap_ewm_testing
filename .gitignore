@@ -1,5 +1,7 @@
 node_modules/
 dist/
+# The bundled MCP server is committed so that connecting Claude needs only Node.js.
+!apps/mcp/dist/
 .next/
 out/
 coverage/

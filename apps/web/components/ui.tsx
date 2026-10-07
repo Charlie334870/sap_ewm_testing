@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import type { SapAdapter, TicketPriority, TicketStatus } from "@ewm/shared";
+import type { DataSource } from "@/lib/types";
 import type { ApiError } from "@/lib/api";
 import { STATUS_LABEL } from "@/lib/format";
 import { useSession } from "@/lib/session";
@@ -120,4 +121,24 @@ export function NeedsProject({ children }: { children: ReactNode }) {
       )}
     </Empty>
   );
+}
+
+/**
+ * Says where data came from. Simulated data gets the hazard tape; SAP's public sandbox gets its
+ * own mark so demo data is never mistaken for a client system either.
+ */
+export function SourceTag({ source }: { source: DataSource | null | undefined }) {
+  if (source === "SIMULATED") return <SimulatedTag adapter="simulated" />;
+  if (source === "SAP_SANDBOX") {
+    return (
+      <span
+        className="sandbox"
+        title="SAP's public API sandbox: real SAP software with SAP demo data. Not a client system."
+      >
+        SAP sandbox
+      </span>
+    );
+  }
+  if (source === "SAP") return <span className="sandbox">SAP</span>;
+  return null;
 }

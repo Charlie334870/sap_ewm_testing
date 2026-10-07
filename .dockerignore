@@ -7,3 +7,6 @@
 !.env.example
 docs
 *.log
+
+# The bundled MCP server is needed by apps/mcp/Dockerfile.
+!apps/mcp/dist

@@ -17,7 +17,9 @@ describe("secret box", () => {
     const [iv, tag, data] = stored.split(".");
     const flipped = Buffer.from(data!, "base64");
     flipped[0]! ^= 1;
-    expect(() => createSecretBox(KEY).decrypt([iv, tag, flipped.toString("base64")].join("."))).toThrow();
+    expect(() =>
+      createSecretBox(KEY).decrypt([iv, tag, flipped.toString("base64")].join(".")),
+    ).toThrow();
     expect(() => createSecretBox("f".repeat(64)).decrypt(stored)).toThrow();
   });
 

@@ -38,44 +38,81 @@ describe("simulated SAP adapter", () => {
   });
 
   it("returns 'not found' for documents that do not exist, never an invented one", async () => {
-    expect(await run("get_delivery", { direction: "outbound", delivery: "99999999" })).toEqual({ found: false, delivery: null });
-    expect(await run("get_delivery", { direction: "inbound", delivery: "80000990" })).toEqual({ found: false, delivery: null });
-    expect(await run("get_warehouse_order", { warehouse: "MUHW", warehouseOrder: "1" })).toMatchObject({ found: false });
-    expect(await run("get_warehouse_tasks", { warehouse: "MUHW", delivery: "99999999" })).toMatchObject({ count: 0, tasks: [] });
+    expect(await run("get_delivery", { direction: "outbound", delivery: "99999999" })).toEqual({
+      found: false,
+      delivery: null,
+    });
+    expect(await run("get_delivery", { direction: "inbound", delivery: "80000990" })).toEqual({
+      found: false,
+      delivery: null,
+    });
+    expect(
+      await run("get_warehouse_order", { warehouse: "MUHW", warehouseOrder: "1" }),
+    ).toMatchObject({ found: false });
+    expect(
+      await run("get_warehouse_tasks", { warehouse: "MUHW", delivery: "99999999" }),
+    ).toMatchObject({ count: 0, tasks: [] });
   });
 
   it("keeps warehouses apart", async () => {
-    expect(await run("get_stock", { warehouse: "OTHR", product: "P-2000" })).toMatchObject({ count: 0 });
-    expect(await run("get_warehouse_tasks", { warehouse: "OTHR", delivery: "80000990" })).toMatchObject({ count: 0 });
-    expect(await run("get_configuration", { area: "stock_types", warehouse: "OTHR" })).toMatchObject({ count: 0 });
+    expect(await run("get_stock", { warehouse: "OTHR", product: "P-2000" })).toMatchObject({
+      count: 0,
+    });
+    expect(
+      await run("get_warehouse_tasks", { warehouse: "OTHR", delivery: "80000990" }),
+    ).toMatchObject({ count: 0 });
+    expect(
+      await run("get_configuration", { area: "stock_types", warehouse: "OTHR" }),
+    ).toMatchObject({ count: 0 });
   });
 
   it("filters logs by severity and time, and queues by failure", async () => {
-    const errors = await run<{ messages: Array<{ severity: string }> }>("get_application_log", { externalId: "80001001", severity: "error" });
+    const errors = await run<{ messages: Array<{ severity: string }> }>("get_application_log", {
+      externalId: "80001001",
+      severity: "error",
+    });
     expect(errors.messages.map((m) => m.severity)).toEqual(["error"]);
-    const early = await run<{ count: number }>("get_application_log", { externalId: "180000450", to: "2026-10-04T09:10:00Z" });
+    const early = await run<{ count: number }>("get_application_log", {
+      externalId: "180000450",
+      to: "2026-10-04T09:10:00Z",
+    });
     expect(early.count).toBe(2);
-    const failed = await run<{ queues: Array<{ status: string }> }>("get_queue_status", { onlyFailed: true });
+    const failed = await run<{ queues: Array<{ status: string }> }>("get_queue_status", {
+      onlyFailed: true,
+    });
     expect(failed.queues.map((q) => q.status)).toEqual(["SYSFAIL"]);
   });
 
   it("applies the limit and says when rows were cut off", async () => {
-    const result = await run<{ count: number; truncated: boolean }>("get_configuration", { area: "stock_types", warehouse: "MUHW" });
+    const result = await run<{ count: number; truncated: boolean }>("get_configuration", {
+      area: "stock_types",
+      warehouse: "MUHW",
+    });
     expect(result.count).toBe(6);
-    const limited = await run<{ count: number; truncated: boolean }>("get_application_log", { externalId: "180000450", limit: 1 });
+    const limited = await run<{ count: number; truncated: boolean }>("get_application_log", {
+      externalId: "180000450",
+      limit: 1,
+    });
     expect(limited).toMatchObject({ count: 1, truncated: true });
   });
 
   it("hands out copies, so a caller cannot alter the scenario", async () => {
-    const first = await run<{ delivery: { items: Array<{ quantity: number }> } }>("get_delivery", { direction: "outbound", delivery: "80001001" });
+    const first = await run<{ delivery: { items: Array<{ quantity: number }> } }>("get_delivery", {
+      direction: "outbound",
+      delivery: "80001001",
+    });
     first.delivery.items[0]!.quantity = 999;
-    const second = await run<{ delivery: { items: Array<{ quantity: number }> } }>("get_delivery", { direction: "outbound", delivery: "80001001" });
+    const second = await run<{ delivery: { items: Array<{ quantity: number }> } }>("get_delivery", {
+      direction: "outbound",
+      delivery: "80001001",
+    });
     expect(second.delivery.items[0]!.quantity).toBe(10);
   });
 
   it("never states a root cause or an SAP message number in scenario data", () => {
     const text = JSON.stringify(SCENARIO_PACKS).toLowerCase();
-    for (const word of ["root cause", "rootcause", "answer", "the fix", "solution"]) expect(text).not.toContain(word);
+    for (const word of ["root cause", "rootcause", "answer", "the fix", "solution"])
+      expect(text).not.toContain(word);
     const logs = SCENARIO_PACKS.flatMap((p) => p.data.logs ?? []);
     expect(logs.length).toBeGreaterThan(0);
     expect(logs.every((m) => m.messageId === null)).toBe(true);

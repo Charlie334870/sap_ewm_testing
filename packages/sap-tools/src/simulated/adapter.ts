@@ -3,16 +3,26 @@ import type { LogMessage, ToolInput, ToolName, ToolOutput } from "../contracts";
 import { baseline, SCENARIO_PACKS } from "./packs";
 import { mergeWorld, type WorldData } from "./world";
 
-const SEVERITY_RANK: Record<LogMessage["severity"], number> = { success: 0, info: 1, warning: 2, error: 3 };
+const SEVERITY_RANK: Record<LogMessage["severity"], number> = {
+  success: 0,
+  info: 1,
+  warning: 2,
+  error: 3,
+};
 
 const eq = (a: string | null | undefined, b: string | undefined) =>
   b === undefined || (a ?? "").toUpperCase() === b.toUpperCase();
 
 const inWindow = (timestamp: string, from?: string, to?: string) =>
-  (!from || timestamp >= new Date(from).toISOString()) && (!to || timestamp <= new Date(to).toISOString());
+  (!from || timestamp >= new Date(from).toISOString()) &&
+  (!to || timestamp <= new Date(to).toISOString());
 
 function page<T>(rows: T[], limit: number) {
-  return { count: Math.min(rows.length, limit), truncated: rows.length > limit, rows: rows.slice(0, limit) };
+  return {
+    count: Math.min(rows.length, limit),
+    truncated: rows.length > limit,
+    rows: rows.slice(0, limit),
+  };
 }
 
 /** The whole simulated warehouse: the healthy baseline plus every scenario pack. */
@@ -36,7 +46,8 @@ export class SimulatedSapAdapter implements SapAdapter {
     const w = this.world;
     this.handlers = {
       get_delivery: (i) => {
-        const delivery = w.deliveries.find((d) => d.direction === i.direction && d.number === i.delivery) ?? null;
+        const delivery =
+          w.deliveries.find((d) => d.direction === i.direction && d.number === i.delivery) ?? null;
         return { found: delivery !== null, delivery };
       },
 
@@ -56,16 +67,24 @@ export class SimulatedSapAdapter implements SapAdapter {
       },
 
       get_warehouse_order: (i) => {
-        const order = w.orders.find((o) => o.warehouseOrder === i.warehouseOrder && eq(o.warehouse, i.warehouse));
+        const order = w.orders.find(
+          (o) => o.warehouseOrder === i.warehouseOrder && eq(o.warehouse, i.warehouse),
+        );
         if (!order) return { found: false, warehouseOrder: null };
         return {
           found: true,
-          warehouseOrder: { ...order, tasks: w.tasks.filter((t) => t.warehouseOrder === order.warehouseOrder) },
+          warehouseOrder: {
+            ...order,
+            tasks: w.tasks.filter((t) => t.warehouseOrder === order.warehouseOrder),
+          },
         };
       },
 
       get_handling_unit: (i) => {
-        const hu = w.handlingUnits.find((h) => h.handlingUnit === i.handlingUnit && eq(h.warehouse, i.warehouse)) ?? null;
+        const hu =
+          w.handlingUnits.find(
+            (h) => h.handlingUnit === i.handlingUnit && eq(h.warehouse, i.warehouse),
+          ) ?? null;
         return { found: hu !== null, handlingUnit: hu };
       },
 
@@ -85,12 +104,15 @@ export class SimulatedSapAdapter implements SapAdapter {
       },
 
       get_storage_bin: (i) => {
-        const bin = w.bins.find((b) => eq(b.storageBin, i.storageBin) && eq(b.warehouse, i.warehouse)) ?? null;
+        const bin =
+          w.bins.find((b) => eq(b.storageBin, i.storageBin) && eq(b.warehouse, i.warehouse)) ??
+          null;
         return { found: bin !== null, storageBin: bin };
       },
 
       get_queue_status: (i) => {
-        const failed = (status: string) => !["processed", "ready", "running"].includes(status.toLowerCase());
+        const failed = (status: string) =>
+          !["processed", "ready", "running"].includes(status.toLowerCase());
         const matches = w.queues.filter(
           (q) =>
             (i.direction === "both" || q.direction === i.direction) &&
@@ -138,7 +160,9 @@ export class SimulatedSapAdapter implements SapAdapter {
           .filter((c) => c.area === i.area && eq(c.warehouse, i.warehouse))
           .map((c) => c.entry)
           .filter((entry) =>
-            Object.entries(i.filters ?? {}).every(([field, value]) => eq(String(entry[field] ?? ""), value)),
+            Object.entries(i.filters ?? {}).every(([field, value]) =>
+              eq(String(entry[field] ?? ""), value),
+            ),
           );
         return { area: i.area, warehouse: i.warehouse, count: entries.length, entries };
       },
@@ -146,7 +170,9 @@ export class SimulatedSapAdapter implements SapAdapter {
   }
 
   unsupportedReason(toolName: string): string | null {
-    return toolName in this.handlers ? null : `The simulated system has no tool called ${toolName}.`;
+    return toolName in this.handlers
+      ? null
+      : `The simulated system has no tool called ${toolName}.`;
   }
 
   /** The simulator answers as whatever system it was registered as. */
@@ -154,9 +180,14 @@ export class SimulatedSapAdapter implements SapAdapter {
     return { sid: this.system.sid, client: this.system.client };
   }
 
-  async execute(toolName: string, input: unknown): Promise<unknown> {
-    const handler = this.handlers[toolName as ToolName] as ((input: unknown) => unknown) | undefined;
-    if (!handler) throw new AdapterError("not_supported", `The simulated system has no tool called ${toolName}.`);
+  async execute(toolName: string, input: unknown, _signal?: AbortSignal): Promise<unknown> {
+    const handler = this.handlers[toolName as ToolName] as
+      ((input: unknown) => unknown) | undefined;
+    if (!handler)
+      throw new AdapterError(
+        "not_supported",
+        `The simulated system has no tool called ${toolName}.`,
+      );
     // Hand out copies so a caller can never alter the scenario data.
     return structuredClone(handler(input));
   }
@@ -164,8 +195,12 @@ export class SimulatedSapAdapter implements SapAdapter {
   /** A task belongs to a warehouse through its delivery or its warehouse order. */
   private inWarehouse(delivery: string | null, order: string | null, warehouse: string): boolean {
     const w = this.world;
-    const viaDelivery = delivery ? w.deliveries.find((d) => d.number === delivery)?.warehouse : undefined;
-    const viaOrder = order ? w.orders.find((o) => o.warehouseOrder === order)?.warehouse : undefined;
+    const viaDelivery = delivery
+      ? w.deliveries.find((d) => d.number === delivery)?.warehouse
+      : undefined;
+    const viaOrder = order
+      ? w.orders.find((o) => o.warehouseOrder === order)?.warehouse
+      : undefined;
     const known = viaDelivery ?? viaOrder;
     return known === undefined || known === null || known.toUpperCase() === warehouse.toUpperCase();
   }
